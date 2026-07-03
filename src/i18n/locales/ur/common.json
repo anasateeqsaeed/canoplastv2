@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "کینوپلاسٹ ای آر پی",
+    "loading": "لوڈ ہو رہا ہے...",
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ",
+    "submit": "جمع کرائیں",
+    "delete": "حذف کریں",
+    "edit": "ترمیم",
+    "add": "شامل کریں",
+    "close": "بند کریں",
+    "search": "تلاش کریں",
+    "filter": "فلٹر",
+    "clear": "صاف کریں",
+    "yes": "ہاں",
+    "no": "نہیں",
+    "confirm": "تصدیق کریں",
+    "back": "واپس",
+    "next": "اگلا",
+    "previous": "پچھلا",
+    "all": "سب",
+    "none": "کوئی نہیں",
+    "select": "منتخب کریں",
+    "required": "ضروری",
+    "optional": "اختیاری",
+    "actions": "اعمال",
+    "status": "حیثیت",
+    "date": "تاریخ",
+    "time": "وقت",
+    "total": "کل",
+    "details": "تفصیلات",
+    "remarks": "ریمارکس",
+    "saved": "محفوظ ہو گیا",
+    "saving": "محفوظ ہو رہا ہے...",
+    "error": "خرابی",
+    "success": "کامیاب",
+    "warning": "انتباہ",
+    "noData": "کوئی ڈیٹا دستیاب نہیں",
+    "viewReport": "رپورٹ دیکھیں"
+  },
+  "auth": {
+    "login": "لاگ ان",
+    "logout": "لاگ آؤٹ",
+    "signOut": "سائن آؤٹ"
+  },
+  "navigation": {
+    "dashboard": "ڈیش بورڈ",
+    "production": "پیداوار",
+    "quality": "کوالٹی",
+    "masters": "ماسٹر ڈیٹا",
+    "settings": "ترتیبات"
+  },
+  "language": {
+    "english": "English",
+    "urdu": "اردو",
+    "switchTo": "تبدیل کریں"
+  }
+}

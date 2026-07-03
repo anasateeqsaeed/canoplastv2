@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Industrial Dark Theme - Primary palette */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Deep industrial blue */
+    --primary: 199 89% 48%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 33% 22%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 172 66% 50%;
+    --accent-foreground: 222 47% 11%;
+
+    /* Status colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 222 47% 11%;
+
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 199 89% 48%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar - Darker */
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 217 33% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 18%;
+    --sidebar-ring: 199 89% 48%;
+
+    /* Chart colors */
+    --chart-1: 199 89% 48%;
+    --chart-2: 172 66% 50%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 0 84% 60%;
+
+    /* Custom gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(199 89% 48%), hsl(172 66% 50%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 60% 45%));
+    --gradient-warning: linear-gradient(135deg, hsl(38 92% 50%), hsl(25 95% 53%));
+    --gradient-danger: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 72% 51%));
+    --gradient-card: linear-gradient(135deg, hsl(222 47% 14%), hsl(222 47% 16%));
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-glow: 0 0 20px hsl(199 89% 48% / 0.3);
+  }
+
+  /* Light Theme */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 20% 45%;
+    --accent: 172 66% 50%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 199 89% 48%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+    --sidebar-background: 210 40% 96%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 92%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 199 89% 48%;
+    --chart-1: 199 89% 48%;
+    --chart-2: 172 66% 50%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 0 84% 60%;
+  }
+
+  /* Ocean Blue Theme */
+  .ocean {
+    --background: 215 50% 12%;
+    --foreground: 210 40% 98%;
+    --card: 215 50% 16%;
+    --card-foreground: 210 40% 98%;
+    --popover: 215 50% 16%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 45% 22%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 45% 18%;
+    --muted-foreground: 210 30% 65%;
+    --accent: 185 70% 50%;
+    --accent-foreground: 215 50% 12%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 45% 22%;
+    --input: 215 45% 22%;
+    --ring: 210 100% 50%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+    --info: 210 100% 50%;
+    --info-foreground: 0 0% 100%;
+    --sidebar-background: 215 50% 8%;
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 210 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 45% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 45% 18%;
+    --sidebar-ring: 210 100% 50%;
+    --chart-1: 210 100% 50%;
+    --chart-2: 185 70% 50%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 0 84% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar for industrial look */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full hover:bg-muted-foreground/50 transition-colors;
+  }
+}
+
+@layer components {
+  /* Status badge variants */
+  .status-running {
+    background-color: hsl(142 76% 36% / 0.2);
+    color: hsl(var(--success));
+    border: 1px solid hsl(142 76% 36% / 0.3);
+  }
+
+  .status-idle {
+    background-color: hsl(38 92% 50% / 0.2);
+    color: hsl(var(--warning));
+    border: 1px solid hsl(38 92% 50% / 0.3);
+  }
+
+  .status-stopped {
+    background-color: hsl(0 84% 60% / 0.2);
+    color: hsl(var(--destructive));
+    border: 1px solid hsl(0 84% 60% / 0.3);
+  }
+
+  .status-maintenance {
+    background-color: hsl(199 89% 48% / 0.2);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(199 89% 48% / 0.3);
+  }
+
+  /* Metric card styles */
+  .metric-card {
+    @apply bg-card rounded-xl border border-border p-6 transition-all duration-300;
+  }
+
+  .metric-card:hover {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+    border-color: hsl(199 89% 48% / 0.3);
+  }
+
+  .metric-value {
+    @apply text-3xl font-bold tracking-tight;
+  }
+
+  .metric-label {
+    @apply text-sm text-muted-foreground font-medium uppercase tracking-wider;
+  }
+
+  /* Module card */
+  .module-card {
+    @apply bg-card rounded-xl border border-border p-6 transition-all duration-300 hover:shadow-lg hover:border-primary/50 cursor-pointer;
+  }
+
+  /* Data table styles */
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table th {
+    @apply text-left text-muted-foreground font-semibold uppercase text-xs tracking-wider py-3 px-4 border-b border-border whitespace-nowrap;
+  }
+
+  .data-table td {
+    @apply py-4 px-4 border-b border-border/50;
+  }
+
+  .data-table tr:hover {
+    @apply bg-muted/30;
+  }
+
+  /* Mobile-friendly table wrapper */
+  .table-container {
+    @apply w-full overflow-x-auto -mx-4 px-4;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent content from being cut off on mobile */
+  .mobile-scroll {
+    @apply overflow-x-auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 15px hsl(var(--success) / 0.4);
+  }
+
+  .glow-warning {
+    box-shadow: 0 0 15px hsl(var(--warning) / 0.4);
+  }
+
+  .glow-danger {
+    box-shadow: 0 0 15px hsl(var(--destructive) / 0.4);
+  }
+
+  /* Animation utilities */
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px hsl(var(--primary) / 0.2);
+    }
+    to {
+      box-shadow: 0 0 25px hsl(var(--primary) / 0.4);
+    }
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-success {
+    background: var(--gradient-success);
+  }
+
+  .gradient-warning {
+    background: var(--gradient-warning);
+  }
+
+  .gradient-danger {
+    background: var(--gradient-danger);
+  }
+
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* RTL Support for Urdu */
+@layer base {
+  /* Urdu font family */
+  .font-urdu {
+    font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Nafees Nastaleeq', serif;
+  }
+
+  /* RTL adjustments */
+  html[dir="rtl"] {
+    /* Flip horizontal margins/paddings in RTL */
+  }
+
+  html[dir="rtl"] body {
+    text-align: right;
+  }
+
+  /* RTL specific overrides */
+  html.rtl .data-table th,
+  html.rtl .data-table td {
+    text-align: right;
+  }
+
+  /* Keep numbers LTR in RTL mode */
+  html.rtl input[type="number"],
+  html.rtl .numeric-input {
+    direction: ltr;
+    text-align: right;
+  }
+
+  /* RTL scrollbar position */
+  html.rtl ::-webkit-scrollbar {
+    /* Scrollbar stays on original side in RTL */
+  }
+}
+
+/* Print Styles */
+@media print {
+  /* Force light color scheme for print */
+  html, body {
+    color-scheme: light !important;
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* Force all elements to have light backgrounds */
+  * {
+    background-color: transparent !important;
+    color: black !important;
+  }
+
+  /* Hide non-printable elements */
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  button,
+  .sidebar,
+  [data-sidebar] {
+    display: none !important;
+  }
+
+  /* Force print content styles */
+  .print-content {
+    display: block !important;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    background: white !important;
+    background-color: white !important;
+    color: black !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  .print-content * {
+    background-color: inherit !important;
+  }
+
+  .print-content table,
+  .print-content th,
+  .print-content td {
+    background-color: white !important;
+    border-color: #9ca3af !important;
+  }
+
+  .print-content tr:nth-child(even) {
+    background-color: #f9fafb !important;
+  }
+
+  .print-content .bg-gray-100,
+  .print-content .bg-gray-200 {
+    background-color: #e5e7eb !important;
+  }
+
+  .print-content .bg-gray-50 {
+    background-color: #f9fafb !important;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 2mm;
+    size: A4 portrait;
+  }
+
+  /* Prevent page breaks inside these elements */
+  .page-break-inside-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Force page break before */
+  .page-break-before {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  /* Table styling for print */
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  /* Ensure borders print properly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+

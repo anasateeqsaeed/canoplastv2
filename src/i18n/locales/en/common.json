@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Canoplast ERP",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "all": "All",
+    "none": "None",
+    "select": "Select",
+    "required": "Required",
+    "optional": "Optional",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "time": "Time",
+    "total": "Total",
+    "details": "Details",
+    "remarks": "Remarks",
+    "saved": "Saved",
+    "saving": "Saving...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "noData": "No data available",
+    "viewReport": "View Report"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signOut": "Sign Out"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "production": "Production",
+    "quality": "Quality",
+    "masters": "Master Data",
+    "settings": "Settings"
+  },
+  "language": {
+    "english": "English",
+    "urdu": "اردو",
+    "switchTo": "Switch to"
+  }
+}
