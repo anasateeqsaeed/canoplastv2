@@ -18,6 +18,14 @@ import UnitsOfMeasureMaster from '@/pages/masters/UnitsOfMeasureMaster';
 import DeliveryTermsMaster from '@/pages/masters/DeliveryTermsMaster';
 import PaymentTermsMaster from '@/pages/masters/PaymentTermsMaster';
 import MasterDataIndex from '@/pages/masters/MasterDataIndex';
+import EmployeeTypes from '@/pages/settings/EmployeeTypes';
+import HRDashboard from '@/pages/hr/HRDashboard';
+import Employees from '@/pages/hr/Employees';
+import Attendance from '@/pages/hr/Attendance';
+import Payroll from '@/pages/hr/Payroll';
+import Leave from '@/pages/hr/Leave';
+import ShiftPatterns from '@/pages/hr/ShiftPatterns';
+import HRAuditLog from '@/pages/hr/HRAuditLog';
 
 import '@/i18n';
 
@@ -37,7 +45,6 @@ const queryClient = new QueryClient({
 // Specific routes registered ahead of a wildcard (e.g. /masters/departments)
 // take priority — React Router v6 ranks explicit segments over splats.
 const stubModules: Array<{ prefix: string; title: string; subtitle: string }> = [
-  { prefix: '/hr', title: 'HR & Payroll', subtitle: 'Phase 1' },
   { prefix: '/purchase', title: 'Purchase', subtitle: 'Phase 2' },
   { prefix: '/inventory', title: 'Inventory', subtitle: 'Phase 2' },
   { prefix: '/sales', title: 'Sales', subtitle: 'Phase 3' },
@@ -76,7 +83,16 @@ const App = () => (
                 <Route path="/settings" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="General settings" /></ProtectedRoute>} />
                 <Route path="/settings/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
                 <Route path="/settings/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
+                <Route path="/settings/employee-types" element={<ProtectedRoute><EmployeeTypes /></ProtectedRoute>} />
                 <Route path="/settings/*" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="Coming in a later phase" /></ProtectedRoute>} />
+
+                <Route path="/hr" element={<ProtectedRoute><HRDashboard /></ProtectedRoute>} />
+                <Route path="/hr/employees" element={<ProtectedRoute><Employees /></ProtectedRoute>} />
+                <Route path="/hr/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+                <Route path="/hr/payroll" element={<ProtectedRoute><Payroll /></ProtectedRoute>} />
+                <Route path="/hr/leave" element={<ProtectedRoute><Leave /></ProtectedRoute>} />
+                <Route path="/hr/shift-patterns" element={<ProtectedRoute><ShiftPatterns /></ProtectedRoute>} />
+                <Route path="/hr/audit-log" element={<ProtectedRoute><HRAuditLog /></ProtectedRoute>} />
 
                 {stubModules.map((m) => (
                   <Route

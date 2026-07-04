@@ -67,6 +67,8 @@ const navItems: NavItem[] = [
       { label: 'Attendance', path: '/hr/attendance' },
       { label: 'Payroll', path: '/hr/payroll' },
       { label: 'Leave Management', path: '/hr/leave' },
+      { label: 'Shift Patterns', path: '/hr/shift-patterns' },
+      { label: 'Audit Trail', path: '/hr/audit-log' },
     ],
   },
   {
@@ -178,6 +180,7 @@ const navItems: NavItem[] = [
       { label: 'General', path: '/settings' },
       { label: 'User Management', path: '/settings/users' },
       { label: 'Role Management', path: '/settings/roles' },
+      { label: 'Employee Types', path: '/settings/employee-types' },
     ],
   },
 ];
