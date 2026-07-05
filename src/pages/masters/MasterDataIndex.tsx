@@ -5,12 +5,15 @@ import {
   Ruler,
   Truck,
   CreditCard,
+  Users,
+  Factory,
+  Package,
 } from 'lucide-react';
 
 // Trimmed from v1's ~15-card index down to the masters that actually exist in
-// v2 so far. The rest (Clients, Suppliers, Materials, Products, Rejections,
-// Stop Reasons, etc.) land in later build phases and are intentionally left
-// out here to avoid linking to pages that would 404.
+// v2 so far. The rest (Products, Rejections, Stop Reasons, etc.) land in later
+// build phases and are intentionally left out here to avoid linking to pages
+// that would 404.
 const masterModules = [
   {
     title: 'Department Master',
@@ -39,6 +42,27 @@ const masterModules = [
     icon: CreditCard,
     path: '/masters/payment-terms',
     color: 'accent',
+  },
+  {
+    title: 'Client Master',
+    description: 'Customers, credit limits and consignees',
+    icon: Users,
+    path: '/masters/clients',
+    color: 'primary',
+  },
+  {
+    title: 'Supplier Master',
+    description: 'Material, service and expense suppliers',
+    icon: Factory,
+    path: '/masters/suppliers',
+    color: 'success',
+  },
+  {
+    title: 'Material Master',
+    description: 'Raw materials, grades and stock levels',
+    icon: Package,
+    path: '/masters/materials',
+    color: 'warning',
   },
 ];
 

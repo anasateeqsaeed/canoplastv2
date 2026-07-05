@@ -77,6 +77,7 @@ const navItems: NavItem[] = [
     icon: <ShoppingCart size={20} />,
     children: [
       { label: 'Purchase Orders', path: '/purchase/orders' },
+      { label: 'Suppliers', path: '/purchase/suppliers' },
       { label: 'GRN', path: '/purchase/grn' },
     ],
   },
@@ -86,8 +87,14 @@ const navItems: NavItem[] = [
     icon: <Boxes size={20} />,
     children: [
       { label: 'Store Dashboard', path: '/inventory' },
-      { label: 'Stock Ledger', path: '/inventory/stock-ledger' },
-      { label: 'Dispatch', path: '/inventory/dispatch' },
+      { label: 'Store Master', path: '/inventory/store-master' },
+      { label: 'Requisitions', path: '/inventory/requisitions' },
+      { label: 'Stock Position', path: '/inventory/stock-position' },
+      { label: 'Material Issue', path: '/inventory/material-issue' },
+      { label: 'Material Return', path: '/inventory/material-return' },
+      { label: 'Material GRN', path: '/inventory/material-grn' },
+      { label: 'Raw Material Stock', path: '/inventory/raw-materials' },
+      { label: 'Adjustment Log', path: '/inventory/stock-adjustment-log' },
     ],
   },
   {

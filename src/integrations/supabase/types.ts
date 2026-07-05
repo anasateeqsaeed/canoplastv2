@@ -159,6 +159,89 @@ export type Database = {
         }
         Relationships: []
       }
+      client_consignees: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_consignees_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          address: string | null
+          code: string
+          contact_person: string | null
+          created_at: string | null
+          credit_limit: number | null
+          default_tax_percent: number | null
+          email: string | null
+          gst_number: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          payment_terms: number | null
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          code: string
+          contact_person?: string | null
+          created_at?: string | null
+          credit_limit?: number | null
+          default_tax_percent?: number | null
+          email?: string | null
+          gst_number?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          payment_terms?: number | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          code?: string
+          contact_person?: string | null
+          created_at?: string | null
+          credit_limit?: number | null
+          default_tax_percent?: number | null
+          email?: string | null
+          gst_number?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          payment_terms?: number | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       custom_role_permissions: {
         Row: {
           can_create: boolean
@@ -296,6 +379,27 @@ export type Database = {
           is_active?: boolean | null
           name?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      doc_counters: {
+        Row: {
+          doc_type: string
+          last_number: number
+          prefix: string
+          updated_at: string
+        }
+        Insert: {
+          doc_type: string
+          last_number?: number
+          prefix: string
+          updated_at?: string
+        }
+        Update: {
+          doc_type?: string
+          last_number?: number
+          prefix?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -554,6 +658,148 @@ export type Database = {
           },
         ]
       }
+      gate_movements: {
+        Row: {
+          attachment_url: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          direction: string
+          driver_cnic: string | null
+          driver_name: string | null
+          gate_no: string | null
+          gate_pass_no: string | null
+          id: string
+          item_description: string | null
+          material_lot_id: string | null
+          movement_date: string
+          movement_time: string
+          party_kind: string | null
+          party_name: string | null
+          quantity: number | null
+          remarks: string | null
+          returnable: boolean
+          returned_at: string | null
+          security_guard: string | null
+          status: string
+          type: string
+          unit: string | null
+          updated_at: string
+          vehicle_no: string | null
+          vendor_id: string | null
+          weight_kg: number | null
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          direction?: string
+          driver_cnic?: string | null
+          driver_name?: string | null
+          gate_no?: string | null
+          gate_pass_no?: string | null
+          id?: string
+          item_description?: string | null
+          material_lot_id?: string | null
+          movement_date?: string
+          movement_time?: string
+          party_kind?: string | null
+          party_name?: string | null
+          quantity?: number | null
+          remarks?: string | null
+          returnable?: boolean
+          returned_at?: string | null
+          security_guard?: string | null
+          status?: string
+          type?: string
+          unit?: string | null
+          updated_at?: string
+          vehicle_no?: string | null
+          vendor_id?: string | null
+          weight_kg?: number | null
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          direction?: string
+          driver_cnic?: string | null
+          driver_name?: string | null
+          gate_no?: string | null
+          gate_pass_no?: string | null
+          id?: string
+          item_description?: string | null
+          material_lot_id?: string | null
+          movement_date?: string
+          movement_time?: string
+          party_kind?: string | null
+          party_name?: string | null
+          quantity?: number | null
+          remarks?: string | null
+          returnable?: boolean
+          returned_at?: string | null
+          security_guard?: string | null
+          status?: string
+          type?: string
+          unit?: string | null
+          updated_at?: string
+          vehicle_no?: string | null
+          vendor_id?: string | null
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gate_movements_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gate_movements_material_lot_id_fkey"
+            columns: ["material_lot_id"]
+            isOneToOne: false
+            referencedRelation: "material_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gate_movements_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grn_tolerance_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       hr_audit_log: {
         Row: {
           action: string
@@ -803,6 +1049,354 @@ export type Database = {
         }
         Relationships: []
       }
+      material_issues: {
+        Row: {
+          created_at: string | null
+          dispatched_qty: number | null
+          from_location_id: string | null
+          id: string
+          issue_date: string
+          issue_number: string
+          issued_by: string | null
+          job_id: string | null
+          material_lot_id: string | null
+          picking_by: string | null
+          picking_completed_at: string | null
+          purpose: string | null
+          quantity_issued: number
+          received_at: string | null
+          received_by: string | null
+          received_qty: number | null
+          remarks: string | null
+          shortage_reason: string | null
+          status: string
+          to_department: string
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dispatched_qty?: number | null
+          from_location_id?: string | null
+          id?: string
+          issue_date?: string
+          issue_number: string
+          issued_by?: string | null
+          job_id?: string | null
+          material_lot_id?: string | null
+          picking_by?: string | null
+          picking_completed_at?: string | null
+          purpose?: string | null
+          quantity_issued: number
+          received_at?: string | null
+          received_by?: string | null
+          received_qty?: number | null
+          remarks?: string | null
+          shortage_reason?: string | null
+          status?: string
+          to_department: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dispatched_qty?: number | null
+          from_location_id?: string | null
+          id?: string
+          issue_date?: string
+          issue_number?: string
+          issued_by?: string | null
+          job_id?: string | null
+          material_lot_id?: string | null
+          picking_by?: string | null
+          picking_completed_at?: string | null
+          purpose?: string | null
+          quantity_issued?: number
+          received_at?: string | null
+          received_by?: string | null
+          received_qty?: number | null
+          remarks?: string | null
+          shortage_reason?: string | null
+          status?: string
+          to_department?: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_issues_from_location_id_fkey"
+            columns: ["from_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_issues_material_lot_id_fkey"
+            columns: ["material_lot_id"]
+            isOneToOne: false
+            referencedRelation: "material_lots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_lots: {
+        Row: {
+          adjustment_reason: string | null
+          created_at: string
+          created_by: string | null
+          customer_balance_kg: number | null
+          customer_client_id: string | null
+          expiry_date: string | null
+          grade: string | null
+          grn_number: string | null
+          id: string
+          inspection_status: string
+          invoice_number: string | null
+          is_adjustment: boolean
+          is_customer_material: boolean | null
+          lot_number: string
+          material_id: string | null
+          po_item_id: string | null
+          put_away_by: string | null
+          put_away_date: string | null
+          quantity: number
+          received_date: string
+          remaining_qty: number
+          remarks: string | null
+          storage_location_id: string | null
+          supplier_id: string | null
+          unit: string
+          unit_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          adjustment_reason?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_balance_kg?: number | null
+          customer_client_id?: string | null
+          expiry_date?: string | null
+          grade?: string | null
+          grn_number?: string | null
+          id?: string
+          inspection_status?: string
+          invoice_number?: string | null
+          is_adjustment?: boolean
+          is_customer_material?: boolean | null
+          lot_number: string
+          material_id?: string | null
+          po_item_id?: string | null
+          put_away_by?: string | null
+          put_away_date?: string | null
+          quantity: number
+          received_date?: string
+          remaining_qty: number
+          remarks?: string | null
+          storage_location_id?: string | null
+          supplier_id?: string | null
+          unit?: string
+          unit_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          adjustment_reason?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_balance_kg?: number | null
+          customer_client_id?: string | null
+          expiry_date?: string | null
+          grade?: string | null
+          grn_number?: string | null
+          id?: string
+          inspection_status?: string
+          invoice_number?: string | null
+          is_adjustment?: boolean
+          is_customer_material?: boolean | null
+          lot_number?: string
+          material_id?: string | null
+          po_item_id?: string | null
+          put_away_by?: string | null
+          put_away_date?: string | null
+          quantity?: number
+          received_date?: string
+          remaining_qty?: number
+          remarks?: string | null
+          storage_location_id?: string | null
+          supplier_id?: string | null
+          unit?: string
+          unit_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_lots_customer_client_id_fkey"
+            columns: ["customer_client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_lots_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_lots_po_item_id_fkey"
+            columns: ["po_item_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_lots_storage_location_id_fkey"
+            columns: ["storage_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_lots_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_lots_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units_of_measure"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_returns: {
+        Row: {
+          created_at: string | null
+          from_department: string
+          from_machine_id: string | null
+          id: string
+          quantity_kg: number
+          received_by: string | null
+          remarks: string | null
+          return_date: string
+          return_number: string
+          return_type: string
+          returned_by: string | null
+          shift: string | null
+          status: string
+          to_department: string | null
+          to_location_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          from_department: string
+          from_machine_id?: string | null
+          id?: string
+          quantity_kg: number
+          received_by?: string | null
+          remarks?: string | null
+          return_date?: string
+          return_number: string
+          return_type?: string
+          returned_by?: string | null
+          shift?: string | null
+          status?: string
+          to_department?: string | null
+          to_location_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          from_department?: string
+          from_machine_id?: string | null
+          id?: string
+          quantity_kg?: number
+          received_by?: string | null
+          remarks?: string | null
+          return_date?: string
+          return_number?: string
+          return_type?: string
+          returned_by?: string | null
+          shift?: string | null
+          status?: string
+          to_department?: string | null
+          to_location_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_returns_to_location_id_fkey"
+            columns: ["to_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materials: {
+        Row: {
+          code: string
+          color: string | null
+          created_at: string | null
+          current_stock: number | null
+          deny_extra_tolerance: boolean | null
+          grade: string | null
+          hsn_code: string | null
+          id: string
+          is_active: boolean | null
+          material_type: string
+          max_stock: number | null
+          min_stock: number | null
+          name: string
+          reorder_level: number | null
+          unit: string | null
+          unit_price: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          color?: string | null
+          created_at?: string | null
+          current_stock?: number | null
+          deny_extra_tolerance?: boolean | null
+          grade?: string | null
+          hsn_code?: string | null
+          id?: string
+          is_active?: boolean | null
+          material_type?: string
+          max_stock?: number | null
+          min_stock?: number | null
+          name: string
+          reorder_level?: number | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          color?: string | null
+          created_at?: string | null
+          current_stock?: number | null
+          deny_extra_tolerance?: boolean | null
+          grade?: string | null
+          hsn_code?: string | null
+          id?: string
+          is_active?: boolean | null
+          material_type?: string
+          max_stock?: number | null
+          min_stock?: number | null
+          name?: string
+          reorder_level?: number | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       payment_terms: {
         Row: {
           created_at: string
@@ -1025,6 +1619,233 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_order_items: {
+        Row: {
+          allow_extra_receipt: boolean | null
+          created_at: string
+          id: string
+          line_total: number | null
+          material_id: string
+          ordered_qty: number
+          pending_qty: number | null
+          po_id: string
+          received_qty: number
+          remarks: string | null
+          tolerance_percent: number | null
+          unit_id: string | null
+          unit_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          allow_extra_receipt?: boolean | null
+          created_at?: string
+          id?: string
+          line_total?: number | null
+          material_id: string
+          ordered_qty: number
+          pending_qty?: number | null
+          po_id: string
+          received_qty?: number
+          remarks?: string | null
+          tolerance_percent?: number | null
+          unit_id?: string | null
+          unit_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          allow_extra_receipt?: boolean | null
+          created_at?: string
+          id?: string
+          line_total?: number | null
+          material_id?: string
+          ordered_qty?: number
+          pending_qty?: number | null
+          po_id?: string
+          received_qty?: number
+          remarks?: string | null
+          tolerance_percent?: number | null
+          unit_id?: string | null
+          unit_price?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_items_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_items_po_id_fkey"
+            columns: ["po_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_items_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units_of_measure"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          client_id: string | null
+          created_at: string
+          created_by: string | null
+          delivery_date: string | null
+          id: string
+          po_date: string
+          po_number: string
+          remarks: string | null
+          source_type: string
+          status: string
+          supplier_id: string | null
+          total_amount: number | null
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          delivery_date?: string | null
+          id?: string
+          po_date?: string
+          po_number: string
+          remarks?: string | null
+          source_type?: string
+          status?: string
+          supplier_id?: string | null
+          total_amount?: number | null
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          delivery_date?: string | null
+          id?: string
+          po_date?: string
+          po_number?: string
+          remarks?: string | null
+          source_type?: string
+          status?: string
+          supplier_id?: string | null
+          total_amount?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requisition_items: {
+        Row: {
+          adjusted_at: string | null
+          adjusted_by: string | null
+          adjusted_qty_kg: number | null
+          adjustment_reason: string | null
+          available_qty_kg: number | null
+          created_at: string | null
+          id: string
+          is_regrind: boolean | null
+          issued_qty_kg: number | null
+          material_id: string | null
+          material_role: string | null
+          original_qty_kg: number | null
+          remarks: string | null
+          required_qty_kg: number
+          requisition_id: string
+          source_location_id: string | null
+          source_type: string | null
+          status: string | null
+        }
+        Insert: {
+          adjusted_at?: string | null
+          adjusted_by?: string | null
+          adjusted_qty_kg?: number | null
+          adjustment_reason?: string | null
+          available_qty_kg?: number | null
+          created_at?: string | null
+          id?: string
+          is_regrind?: boolean | null
+          issued_qty_kg?: number | null
+          material_id?: string | null
+          material_role?: string | null
+          original_qty_kg?: number | null
+          remarks?: string | null
+          required_qty_kg: number
+          requisition_id: string
+          source_location_id?: string | null
+          source_type?: string | null
+          status?: string | null
+        }
+        Update: {
+          adjusted_at?: string | null
+          adjusted_by?: string | null
+          adjusted_qty_kg?: number | null
+          adjustment_reason?: string | null
+          available_qty_kg?: number | null
+          created_at?: string | null
+          id?: string
+          is_regrind?: boolean | null
+          issued_qty_kg?: number | null
+          material_id?: string | null
+          material_role?: string | null
+          original_qty_kg?: number | null
+          remarks?: string | null
+          required_qty_kg?: number
+          requisition_id?: string
+          source_location_id?: string | null
+          source_type?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requisition_items_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requisition_items_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "store_requisitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requisition_items_source_location_id_fkey"
+            columns: ["source_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_activity_log: {
         Row: {
           action: string
@@ -1126,6 +1947,396 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      shift_settings: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          display_name: string | null
+          end_hour: number
+          end_minute: number
+          grace_minutes: number
+          id: string
+          is_active: boolean | null
+          lunch_minutes: number
+          ot_threshold_hours: number
+          shift_name: string
+          standard_hours: number
+          start_hour: number
+          start_minute: number
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          end_hour?: number
+          end_minute?: number
+          grace_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          lunch_minutes?: number
+          ot_threshold_hours?: number
+          shift_name: string
+          standard_hours?: number
+          start_hour?: number
+          start_minute?: number
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          end_hour?: number
+          end_minute?: number
+          grace_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          lunch_minutes?: number
+          ot_threshold_hours?: number
+          shift_name?: string
+          standard_hours?: number
+          start_hour?: number
+          start_minute?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      stock_adjustment_log: {
+        Row: {
+          adjusted_at: string
+          adjusted_by: string | null
+          after_qty: number
+          as_of_date: string
+          before_qty: number
+          client_id: string | null
+          created_at: string
+          delta: number
+          id: string
+          item_code: string | null
+          item_id: string
+          item_name: string | null
+          material_lot_id: string | null
+          reason: string
+          reason_type: string | null
+          scope: string
+        }
+        Insert: {
+          adjusted_at?: string
+          adjusted_by?: string | null
+          after_qty: number
+          as_of_date?: string
+          before_qty: number
+          client_id?: string | null
+          created_at?: string
+          delta: number
+          id?: string
+          item_code?: string | null
+          item_id: string
+          item_name?: string | null
+          material_lot_id?: string | null
+          reason: string
+          reason_type?: string | null
+          scope?: string
+        }
+        Update: {
+          adjusted_at?: string
+          adjusted_by?: string | null
+          after_qty?: number
+          as_of_date?: string
+          before_qty?: number
+          client_id?: string | null
+          created_at?: string
+          delta?: number
+          id?: string
+          item_code?: string | null
+          item_id?: string
+          item_name?: string | null
+          material_lot_id?: string | null
+          reason?: string
+          reason_type?: string | null
+          scope?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_adjustment_log_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_adjustment_log_material_lot_id_fkey"
+            columns: ["material_lot_id"]
+            isOneToOne: false
+            referencedRelation: "material_lots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storage_locations: {
+        Row: {
+          bin_number: string | null
+          capacity_kg: number | null
+          created_at: string | null
+          current_stock_kg: number | null
+          id: string
+          is_active: boolean | null
+          location_code: string
+          location_name: string
+          material_type: string | null
+          rack_number: string | null
+          row_number: string | null
+          store_id: string | null
+          sub_zone: string | null
+          updated_at: string | null
+          zone: string
+        }
+        Insert: {
+          bin_number?: string | null
+          capacity_kg?: number | null
+          created_at?: string | null
+          current_stock_kg?: number | null
+          id?: string
+          is_active?: boolean | null
+          location_code: string
+          location_name: string
+          material_type?: string | null
+          rack_number?: string | null
+          row_number?: string | null
+          store_id?: string | null
+          sub_zone?: string | null
+          updated_at?: string | null
+          zone?: string
+        }
+        Update: {
+          bin_number?: string | null
+          capacity_kg?: number | null
+          created_at?: string | null
+          current_stock_kg?: number | null
+          id?: string
+          is_active?: boolean | null
+          location_code?: string
+          location_name?: string
+          material_type?: string | null
+          rack_number?: string | null
+          row_number?: string | null
+          store_id?: string | null
+          sub_zone?: string | null
+          updated_at?: string | null
+          zone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storage_locations_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_requisitions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          department_id: string | null
+          id: string
+          job_id: string | null
+          machine_id: string | null
+          manager_approved: boolean | null
+          manager_approved_at: string | null
+          manager_approved_by: string | null
+          planned_production_qty: number | null
+          rejection_reason: string | null
+          remarks: string | null
+          requested_by: string | null
+          requires_approval: boolean | null
+          requisition_date: string
+          requisition_number: string
+          shift: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string
+          job_id?: string | null
+          machine_id?: string | null
+          manager_approved?: boolean | null
+          manager_approved_at?: string | null
+          manager_approved_by?: string | null
+          planned_production_qty?: number | null
+          rejection_reason?: string | null
+          remarks?: string | null
+          requested_by?: string | null
+          requires_approval?: boolean | null
+          requisition_date?: string
+          requisition_number: string
+          shift?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string
+          job_id?: string | null
+          machine_id?: string | null
+          manager_approved?: boolean | null
+          manager_approved_at?: string | null
+          manager_approved_by?: string | null
+          planned_production_qty?: number | null
+          rejection_reason?: string | null
+          remarks?: string | null
+          requested_by?: string | null
+          requires_approval?: boolean | null
+          requisition_date?: string
+          requisition_number?: string
+          shift?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_requisitions_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stores: {
+        Row: {
+          code: string
+          created_at: string | null
+          description: string | null
+          floor_location: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          description?: string | null
+          floor_location?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          description?: string | null
+          floor_location?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      suppliers: {
+        Row: {
+          address: string | null
+          bank_details: string | null
+          category: string | null
+          code: string
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          expense_category: string | null
+          gst_number: string | null
+          id: string
+          is_active: boolean | null
+          labor_rate: number | null
+          labor_rate_unit: string | null
+          lead_time_days: number | null
+          linked_client_id: string | null
+          min_order_qty: number | null
+          name: string
+          ntn_number: string | null
+          payment_terms: number | null
+          petty_cash_limit: number | null
+          phone: string | null
+          process_types: string[] | null
+          supplier_type: string
+          turnaround_days: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          bank_details?: string | null
+          category?: string | null
+          code: string
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          expense_category?: string | null
+          gst_number?: string | null
+          id?: string
+          is_active?: boolean | null
+          labor_rate?: number | null
+          labor_rate_unit?: string | null
+          lead_time_days?: number | null
+          linked_client_id?: string | null
+          min_order_qty?: number | null
+          name: string
+          ntn_number?: string | null
+          payment_terms?: number | null
+          petty_cash_limit?: number | null
+          phone?: string | null
+          process_types?: string[] | null
+          supplier_type?: string
+          turnaround_days?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          bank_details?: string | null
+          category?: string | null
+          code?: string
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          expense_category?: string | null
+          gst_number?: string | null
+          id?: string
+          is_active?: boolean | null
+          labor_rate?: number | null
+          labor_rate_unit?: string | null
+          lead_time_days?: number | null
+          linked_client_id?: string | null
+          min_order_qty?: number | null
+          name?: string
+          ntn_number?: string | null
+          payment_terms?: number | null
+          petty_cash_limit?: number | null
+          phone?: string | null
+          process_types?: string[] | null
+          supplier_type?: string
+          turnaround_days?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suppliers_linked_client_fkey"
+            columns: ["linked_client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       units_of_measure: {
         Row: {
@@ -1313,6 +2524,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_material_lot_number: { Args: never; Returns: string }
       get_employee_work_pattern: {
         Args: { _employee_id: string }
         Returns: {
@@ -1371,6 +2583,10 @@ export type Database = {
           p_role?: string
           p_target_user_id?: string
         }
+        Returns: string
+      }
+      next_doc_number: {
+        Args: { _doc_type: string; _prefix: string }
         Returns: string
       }
       resolve_shift: {

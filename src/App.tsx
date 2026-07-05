@@ -18,6 +18,19 @@ import UnitsOfMeasureMaster from '@/pages/masters/UnitsOfMeasureMaster';
 import DeliveryTermsMaster from '@/pages/masters/DeliveryTermsMaster';
 import PaymentTermsMaster from '@/pages/masters/PaymentTermsMaster';
 import MasterDataIndex from '@/pages/masters/MasterDataIndex';
+import ClientMaster from '@/pages/masters/ClientMaster';
+import SupplierMaster from '@/pages/masters/SupplierMaster';
+import MaterialMaster from '@/pages/masters/MaterialMaster';
+import PurchaseOrders from '@/pages/purchase/PurchaseOrders';
+import StoreDashboard from '@/pages/inventory/StoreDashboard';
+import StoreMaster from '@/pages/inventory/StoreMaster';
+import StoreRequisitions from '@/pages/inventory/StoreRequisitions';
+import StockPosition from '@/pages/inventory/StockPosition';
+import MaterialIssue from '@/pages/inventory/MaterialIssue';
+import MaterialReturn from '@/pages/inventory/MaterialReturn';
+import MaterialGRN from '@/pages/inventory/MaterialGRN';
+import RawMaterialStock from '@/pages/inventory/RawMaterialStock';
+import StockAdjustmentLog from '@/pages/inventory/StockAdjustmentLog';
 import EmployeeTypes from '@/pages/settings/EmployeeTypes';
 import HRDashboard from '@/pages/hr/HRDashboard';
 import Employees from '@/pages/hr/Employees';
@@ -45,8 +58,6 @@ const queryClient = new QueryClient({
 // Specific routes registered ahead of a wildcard (e.g. /masters/departments)
 // take priority — React Router v6 ranks explicit segments over splats.
 const stubModules: Array<{ prefix: string; title: string; subtitle: string }> = [
-  { prefix: '/purchase', title: 'Purchase', subtitle: 'Phase 2' },
-  { prefix: '/inventory', title: 'Inventory', subtitle: 'Phase 2' },
   { prefix: '/sales', title: 'Sales', subtitle: 'Phase 3' },
   { prefix: '/accounting', title: 'Accounting', subtitle: 'Phase 4' },
   { prefix: '/production', title: 'Production', subtitle: 'Phase 5' },
@@ -78,7 +89,30 @@ const App = () => (
                 <Route path="/masters/units-of-measure" element={<ProtectedRoute><UnitsOfMeasureMaster /></ProtectedRoute>} />
                 <Route path="/masters/delivery-terms" element={<ProtectedRoute><DeliveryTermsMaster /></ProtectedRoute>} />
                 <Route path="/masters/payment-terms" element={<ProtectedRoute><PaymentTermsMaster /></ProtectedRoute>} />
+                <Route path="/masters/clients" element={<ProtectedRoute><ClientMaster /></ProtectedRoute>} />
+                <Route path="/masters/suppliers" element={<ProtectedRoute><SupplierMaster /></ProtectedRoute>} />
+                <Route path="/masters/materials" element={<ProtectedRoute><MaterialMaster /></ProtectedRoute>} />
                 <Route path="/masters/*" element={<ProtectedRoute><ComingSoon title="Master Data" subtitle="Landing across Phases 0-5" /></ProtectedRoute>} />
+
+                {/* Purchase (Phase 2) */}
+                <Route path="/purchase" element={<ProtectedRoute><PurchaseOrders /></ProtectedRoute>} />
+                <Route path="/purchase/orders" element={<ProtectedRoute><PurchaseOrders /></ProtectedRoute>} />
+                <Route path="/purchase/suppliers" element={<ProtectedRoute><SupplierMaster /></ProtectedRoute>} />
+                <Route path="/purchase/grn" element={<ProtectedRoute><MaterialGRN /></ProtectedRoute>} />
+                <Route path="/purchase/*" element={<ProtectedRoute><ComingSoon title="Purchase" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
+
+                {/* Inventory (Phase 2) */}
+                <Route path="/inventory" element={<ProtectedRoute><StoreDashboard /></ProtectedRoute>} />
+                <Route path="/inventory/store-master" element={<ProtectedRoute><StoreMaster /></ProtectedRoute>} />
+                <Route path="/inventory/requisitions" element={<ProtectedRoute><StoreRequisitions /></ProtectedRoute>} />
+                <Route path="/inventory/stock-position" element={<ProtectedRoute><StockPosition /></ProtectedRoute>} />
+                <Route path="/inventory/material-issue" element={<ProtectedRoute><MaterialIssue /></ProtectedRoute>} />
+                <Route path="/inventory/material-return" element={<ProtectedRoute><MaterialReturn /></ProtectedRoute>} />
+                <Route path="/inventory/material-grn" element={<ProtectedRoute><MaterialGRN /></ProtectedRoute>} />
+                <Route path="/inventory/raw-materials" element={<ProtectedRoute><RawMaterialStock /></ProtectedRoute>} />
+                <Route path="/inventory/rm-stock" element={<ProtectedRoute><RawMaterialStock /></ProtectedRoute>} />
+                <Route path="/inventory/stock-adjustment-log" element={<ProtectedRoute><StockAdjustmentLog /></ProtectedRoute>} />
+                <Route path="/inventory/*" element={<ProtectedRoute><ComingSoon title="Inventory" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
 
                 <Route path="/settings" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="General settings" /></ProtectedRoute>} />
                 <Route path="/settings/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
