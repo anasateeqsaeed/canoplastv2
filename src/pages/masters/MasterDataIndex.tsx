@@ -8,6 +8,7 @@ import {
   Users,
   Factory,
   Package,
+  Boxes,
 } from 'lucide-react';
 
 // Trimmed from v1's ~15-card index down to the masters that actually exist in
@@ -63,6 +64,13 @@ const masterModules = [
     icon: Package,
     path: '/masters/materials',
     color: 'warning',
+  },
+  {
+    title: 'Product Master',
+    description: 'Product catalog, categories & pricing',
+    icon: Boxes,
+    path: '/masters/products',
+    color: 'accent',
   },
 ];
 

@@ -39,6 +39,15 @@ import Payroll from '@/pages/hr/Payroll';
 import Leave from '@/pages/hr/Leave';
 import ShiftPatterns from '@/pages/hr/ShiftPatterns';
 import HRAuditLog from '@/pages/hr/HRAuditLog';
+import SalesIndex from '@/pages/sales/SalesIndex';
+import Quotations from '@/pages/sales/Quotations';
+import SalesOrders from '@/pages/sales/SalesOrders';
+import SalesOrderDetail from '@/pages/sales/SalesOrderDetail';
+import SalesInvoices from '@/pages/sales/SalesInvoices';
+import SalesInvoiceDetail from '@/pages/sales/SalesInvoiceDetail';
+import ProductMaster from '@/pages/masters/ProductMaster';
+import DispatchPage from '@/pages/inventory/Dispatch';
+import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
 
 import '@/i18n';
 
@@ -58,7 +67,6 @@ const queryClient = new QueryClient({
 // Specific routes registered ahead of a wildcard (e.g. /masters/departments)
 // take priority — React Router v6 ranks explicit segments over splats.
 const stubModules: Array<{ prefix: string; title: string; subtitle: string }> = [
-  { prefix: '/sales', title: 'Sales', subtitle: 'Phase 3' },
   { prefix: '/accounting', title: 'Accounting', subtitle: 'Phase 4' },
   { prefix: '/production', title: 'Production', subtitle: 'Phase 5' },
   { prefix: '/quality', title: 'Quality', subtitle: 'Phase 5' },
@@ -92,6 +100,7 @@ const App = () => (
                 <Route path="/masters/clients" element={<ProtectedRoute><ClientMaster /></ProtectedRoute>} />
                 <Route path="/masters/suppliers" element={<ProtectedRoute><SupplierMaster /></ProtectedRoute>} />
                 <Route path="/masters/materials" element={<ProtectedRoute><MaterialMaster /></ProtectedRoute>} />
+                <Route path="/masters/products" element={<ProtectedRoute><ProductMaster /></ProtectedRoute>} />
                 <Route path="/masters/*" element={<ProtectedRoute><ComingSoon title="Master Data" subtitle="Landing across Phases 0-5" /></ProtectedRoute>} />
 
                 {/* Purchase (Phase 2) */}
@@ -112,6 +121,8 @@ const App = () => (
                 <Route path="/inventory/raw-materials" element={<ProtectedRoute><RawMaterialStock /></ProtectedRoute>} />
                 <Route path="/inventory/rm-stock" element={<ProtectedRoute><RawMaterialStock /></ProtectedRoute>} />
                 <Route path="/inventory/stock-adjustment-log" element={<ProtectedRoute><StockAdjustmentLog /></ProtectedRoute>} />
+                <Route path="/inventory/dispatch" element={<ProtectedRoute><DispatchPage /></ProtectedRoute>} />
+                <Route path="/inventory/fg-stock" element={<ProtectedRoute><FinishedGoodsStock /></ProtectedRoute>} />
                 <Route path="/inventory/*" element={<ProtectedRoute><ComingSoon title="Inventory" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
 
                 <Route path="/settings" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="General settings" /></ProtectedRoute>} />
@@ -127,6 +138,15 @@ const App = () => (
                 <Route path="/hr/leave" element={<ProtectedRoute><Leave /></ProtectedRoute>} />
                 <Route path="/hr/shift-patterns" element={<ProtectedRoute><ShiftPatterns /></ProtectedRoute>} />
                 <Route path="/hr/audit-log" element={<ProtectedRoute><HRAuditLog /></ProtectedRoute>} />
+
+                {/* Sales (Phase 3) */}
+                <Route path="/sales" element={<ProtectedRoute><SalesIndex /></ProtectedRoute>} />
+                <Route path="/sales/quotations" element={<ProtectedRoute><Quotations /></ProtectedRoute>} />
+                <Route path="/sales/orders" element={<ProtectedRoute><SalesOrders /></ProtectedRoute>} />
+                <Route path="/sales/orders/:id" element={<ProtectedRoute><SalesOrderDetail /></ProtectedRoute>} />
+                <Route path="/sales/invoices" element={<ProtectedRoute><SalesInvoices /></ProtectedRoute>} />
+                <Route path="/sales/invoices/:id" element={<ProtectedRoute><SalesInvoiceDetail /></ProtectedRoute>} />
+                <Route path="/sales/*" element={<ProtectedRoute><ComingSoon title="Sales" subtitle="Customers master lives at /masters/clients" /></ProtectedRoute>} />
 
                 {stubModules.map((m) => (
                   <Route

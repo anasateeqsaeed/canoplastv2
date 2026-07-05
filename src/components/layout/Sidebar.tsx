@@ -95,6 +95,8 @@ const navItems: NavItem[] = [
       { label: 'Material GRN', path: '/inventory/material-grn' },
       { label: 'Raw Material Stock', path: '/inventory/raw-materials' },
       { label: 'Adjustment Log', path: '/inventory/stock-adjustment-log' },
+      { label: 'Dispatch', path: '/inventory/dispatch' },
+      { label: 'FG Stock', path: '/inventory/fg-stock' },
     ],
   },
   {
