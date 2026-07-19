@@ -329,38 +329,22 @@
   }
 }
 
-/* RTL Support for Urdu */
+/* Urdu language support — layout always stays LTR; only fonts change */
 @layer base {
   /* Urdu font family */
   .font-urdu {
     font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Nafees Nastaleeq', serif;
   }
 
-  /* RTL adjustments */
-  html[dir="rtl"] {
-    /* Flip horizontal margins/paddings in RTL */
+  /* In Urdu mode, prefer the Nastaliq font for Urdu glyphs;
+     Latin text and numbers fall through to the default stack */
+  html.lang-ur body {
+    font-family: 'Inter', 'Noto Nastaliq Urdu', system-ui, -apple-system, sans-serif;
   }
 
-  html[dir="rtl"] body {
-    text-align: right;
-  }
-
-  /* RTL specific overrides */
-  html.rtl .data-table th,
-  html.rtl .data-table td {
-    text-align: right;
-  }
-
-  /* Keep numbers LTR in RTL mode */
-  html.rtl input[type="number"],
-  html.rtl .numeric-input {
-    direction: ltr;
-    text-align: right;
-  }
-
-  /* RTL scrollbar position */
-  html.rtl ::-webkit-scrollbar {
-    /* Scrollbar stays on original side in RTL */
+  /* Urdu Nastaliq needs extra line height to avoid clipped diacritics */
+  html.lang-ur .font-urdu {
+    line-height: 1.9;
   }
 }
 

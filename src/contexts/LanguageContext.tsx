@@ -37,14 +37,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [language]);
 
   useEffect(() => {
-    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    // Layout stays LTR even in Urdu mode — mirroring the whole app made
+    // tables, sidebars and forms unusable. Urdu text still renders
+    // right-to-left within its own text runs via Unicode bidi.
+    document.documentElement.dir = 'ltr';
     document.documentElement.lang = language;
-    if (isRTL) {
-      document.documentElement.classList.add('rtl');
-    } else {
-      document.documentElement.classList.remove('rtl');
-    }
-  }, [isRTL, language]);
+    document.documentElement.classList.remove('rtl');
+    document.documentElement.classList.toggle('lang-ur', language === 'ur');
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, isRTL, toggleLanguage }}>
