@@ -1,0 +1,34 @@
+interface LogoProps {
+  size?: number;
+  className?: string;
+}
+
+export function Logo({ size = 32, className }: LogoProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      role="img"
+      aria-label="Canoplast"
+    >
+      <defs>
+        <linearGradient id="canoplast-logo-g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#3b82f6" />
+          <stop offset="1" stopColor="#06b6d4" />
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="112" fill="url(#canoplast-logo-g)" />
+      <path
+        d="M 333.2 164.1 A 120 120 0 1 0 333.2 347.9"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="56"
+        strokeLinecap="round"
+      />
+      <circle cx="368" cy="256" r="30" fill="#ffffff" />
+    </svg>
+  );
+}

@@ -4,7 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Factory, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -132,9 +133,7 @@ export default function Auth() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-4">
-            <Factory size={32} className="text-primary-foreground" />
-          </div>
+          <Logo size={64} className="inline-block mb-4" />
           <h1 className="text-2xl font-bold text-foreground">Canoplast ERP</h1>
           <p className="text-muted-foreground mt-1">
             Canoplast Manufacturing ERP System

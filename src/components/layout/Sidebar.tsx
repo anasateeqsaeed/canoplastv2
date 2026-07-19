@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useMyPermissions } from '@/hooks/useMyPermissions';
 import { pathToModule } from '@/lib/routeModuleMap';
+import { Logo } from '@/components/Logo';
 import {
   Factory,
   LayoutDashboard,
@@ -258,9 +259,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-              <Factory size={18} className="text-primary-foreground" />
-            </div>
+            <Logo size={32} />
             <span className="font-bold text-lg text-foreground">Canoplast ERP</span>
           </div>
         )}
