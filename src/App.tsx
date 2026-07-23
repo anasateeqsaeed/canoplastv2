@@ -48,6 +48,7 @@ import SalesInvoiceDetail from '@/pages/sales/SalesInvoiceDetail';
 import ProductMaster from '@/pages/masters/ProductMaster';
 import DispatchPage from '@/pages/inventory/Dispatch';
 import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
+import ElectricityDashboard from '@/pages/finance/ElectricityDashboard';
 
 import '@/i18n';
 
@@ -147,6 +148,9 @@ const App = () => (
                 <Route path="/sales/invoices" element={<ProtectedRoute><SalesInvoices /></ProtectedRoute>} />
                 <Route path="/sales/invoices/:id" element={<ProtectedRoute><SalesInvoiceDetail /></ProtectedRoute>} />
                 <Route path="/sales/*" element={<ProtectedRoute><ComingSoon title="Sales" subtitle="Customers master lives at /masters/clients" /></ProtectedRoute>} />
+
+                {/* Operational Finance (Phase 6) — Electricity dashboard lands early */}
+                <Route path="/finance/electricity" element={<ProtectedRoute><ElectricityDashboard /></ProtectedRoute>} />
 
                 {stubModules.map((m) => (
                   <Route

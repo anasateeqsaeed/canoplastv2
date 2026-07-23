@@ -171,6 +171,7 @@ const navItems: NavItem[] = [
     icon: <Calculator size={20} />,
     children: [
       { label: 'Expense Dashboard', path: '/finance' },
+      { label: 'Electricity', path: '/finance/electricity' },
       { label: 'Petty Cash Ledger', path: '/finance/ledger' },
       { label: 'Advance Ledger', path: '/finance/advances' },
       { label: 'Investors', path: '/finance/investors' },
