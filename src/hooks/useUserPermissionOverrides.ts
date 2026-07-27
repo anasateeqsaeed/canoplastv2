@@ -78,7 +78,7 @@ export function useUpsertUserPermissionOverride() {
       if (existing) {
         const { data, error } = await supabase
           .from('user_permission_overrides')
-          .update({ [permission]: value, updated_at: new Date().toISOString() })
+          .update({ [permission]: value, updated_at: new Date().toISOString() } as never)
           .eq('id', existing.id)
           .select()
           .single();
@@ -87,7 +87,7 @@ export function useUpsertUserPermissionOverride() {
       } else {
         const { data, error } = await supabase
           .from('user_permission_overrides')
-          .insert({ user_id: userId, module, [permission]: value })
+          .insert({ user_id: userId, module, [permission]: value } as never)
           .select()
           .single();
         if (error) throw error;
@@ -307,13 +307,13 @@ export function useBulkColumnOverride() {
       const toInsert = rows.filter((r) => !existingModules.has(r.module as string));
       const toUpdateModules = rows.filter((r) => existingModules.has(r.module as string)).map((r) => r.module as string);
       if (toInsert.length > 0) {
-        const { error } = await supabase.from('user_permission_overrides').insert(toInsert);
+        const { error } = await supabase.from('user_permission_overrides').insert(toInsert as never[]);
         if (error) throw error;
       }
       if (toUpdateModules.length > 0) {
         const { error } = await supabase
           .from('user_permission_overrides')
-          .update({ [column]: value, updated_at: new Date().toISOString() })
+          .update({ [column]: value, updated_at: new Date().toISOString() } as never)
           .eq('user_id', userId)
           .in('module', toUpdateModules);
         if (error) throw error;

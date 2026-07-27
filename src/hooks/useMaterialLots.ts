@@ -107,7 +107,7 @@ export function useMaterialLots(filters?: {
       
       const { data, error } = await query;
       if (error) throw error;
-      return data as MaterialLot[];
+      return data as unknown as MaterialLot[];
     },
     staleTime: 30000,
   });
@@ -137,12 +137,12 @@ export function useCustomerMaterialLots(clientId?: string) {
       
       // Post-filter by client if needed
       if (clientId) {
-        return (data as MaterialLot[]).filter(lot => 
+        return (data as unknown as MaterialLot[]).filter(lot => 
           lot.supplier?.linked_client_id === clientId
         );
       }
       
-      return data as MaterialLot[];
+      return data as unknown as MaterialLot[];
     },
     staleTime: 30000,
   });
@@ -170,7 +170,7 @@ export function useAvailableMaterialLots(materialId?: string) {
       
       const { data, error } = await query;
       if (error) throw error;
-      return data as MaterialLot[];
+      return data as unknown as MaterialLot[];
     },
   });
 }
@@ -272,7 +272,7 @@ export function useCreateMaterialLot() {
         }
       }
 
-      return result as MaterialLot;
+      return result as unknown as MaterialLot;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['material-lots'] });
