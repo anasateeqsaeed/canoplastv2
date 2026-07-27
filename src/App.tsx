@@ -48,6 +48,14 @@ import SalesInvoiceDetail from '@/pages/sales/SalesInvoiceDetail';
 import ProductMaster from '@/pages/masters/ProductMaster';
 import DispatchPage from '@/pages/inventory/Dispatch';
 import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
+import AccountingDashboard from '@/pages/accounting/AccountingDashboard';
+import ChartOfAccounts from '@/pages/accounting/ChartOfAccounts';
+import JournalEntries from '@/pages/accounting/JournalEntries';
+import Receivables from '@/pages/accounting/Receivables';
+import Payables from '@/pages/accounting/Payables';
+import Banking from '@/pages/accounting/Banking';
+import FinancialReports from '@/pages/accounting/FinancialReports';
+import FiscalPeriods from '@/pages/accounting/FiscalPeriods';
 
 import '@/i18n';
 
@@ -67,7 +75,6 @@ const queryClient = new QueryClient({
 // Specific routes registered ahead of a wildcard (e.g. /masters/departments)
 // take priority — React Router v6 ranks explicit segments over splats.
 const stubModules: Array<{ prefix: string; title: string; subtitle: string }> = [
-  { prefix: '/accounting', title: 'Accounting', subtitle: 'Phase 4' },
   { prefix: '/production', title: 'Production', subtitle: 'Phase 5' },
   { prefix: '/quality', title: 'Quality', subtitle: 'Phase 5' },
   { prefix: '/maintenance', title: 'Maintenance', subtitle: 'Phase 5' },
@@ -147,6 +154,16 @@ const App = () => (
                 <Route path="/sales/invoices" element={<ProtectedRoute><SalesInvoices /></ProtectedRoute>} />
                 <Route path="/sales/invoices/:id" element={<ProtectedRoute><SalesInvoiceDetail /></ProtectedRoute>} />
                 <Route path="/sales/*" element={<ProtectedRoute><ComingSoon title="Sales" subtitle="Customers master lives at /masters/clients" /></ProtectedRoute>} />
+
+                {/* Accounting (Phase 4) */}
+                <Route path="/accounting" element={<ProtectedRoute><AccountingDashboard /></ProtectedRoute>} />
+                <Route path="/accounting/chart-of-accounts" element={<ProtectedRoute><ChartOfAccounts /></ProtectedRoute>} />
+                <Route path="/accounting/journal-entries" element={<ProtectedRoute><JournalEntries /></ProtectedRoute>} />
+                <Route path="/accounting/receivables" element={<ProtectedRoute><Receivables /></ProtectedRoute>} />
+                <Route path="/accounting/payables" element={<ProtectedRoute><Payables /></ProtectedRoute>} />
+                <Route path="/accounting/bank" element={<ProtectedRoute><Banking /></ProtectedRoute>} />
+                <Route path="/accounting/reports" element={<ProtectedRoute><FinancialReports /></ProtectedRoute>} />
+                <Route path="/accounting/fiscal-periods" element={<ProtectedRoute><FiscalPeriods /></ProtectedRoute>} />
 
                 {stubModules.map((m) => (
                   <Route

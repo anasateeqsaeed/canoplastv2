@@ -122,6 +122,7 @@ const navItems: NavItem[] = [
       { label: 'Payables', path: '/accounting/payables' },
       { label: 'Bank', path: '/accounting/bank' },
       { label: 'Reports', path: '/accounting/reports' },
+      { label: 'Fiscal Periods', path: '/accounting/fiscal-periods' },
     ],
   },
   {
