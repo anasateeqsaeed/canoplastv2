@@ -3,6 +3,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { DataTable, Column } from '@/components/masters/DataTable';
 import { StatusBadge } from '@/components/masters/StatusBadge';
 import { useClients, useCreateClient, useUpdateClient, useDeleteClient, Client } from '@/hooks/useClients';
+import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 import { useAuth } from '@/hooks/useAuth';
 import { Building, CreditCard, MapPin } from 'lucide-react';
 import {
@@ -18,9 +19,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { RefreshButton } from '@/components/layout/RefreshButton';
 
 export default function ClientMaster() {
-  const { roles } = useAuth();
+  const { roles, user } = useAuth();
   const isAdmin = roles.includes('admin');
-  
+
   const { data: clients = [], isLoading } = useClients();
   const createClient = useCreateClient();
   const updateClient = useUpdateClient();
@@ -29,6 +30,16 @@ export default function ClientMaster() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewMode, setIsViewMode] = useState(false);
+
+  // Keep the list live from other users' edits, but hold refreshes while the
+  // form dialog is open so an in-progress edit isn't clobbered. Buffered
+  // changes are flushed automatically when the dialog closes.
+  useRealtimeSync({
+    table: 'clients',
+    queryKey: ['clients'],
+    isFormActive: isDialogOpen,
+    enabled: !!user,
+  });
 
   const columns: Column<Client>[] = [
     {
