@@ -32,11 +32,14 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   useFinishedGoodsStock,
   useProductStockTransactions,
+  useStockLedger,
   useCreateStockAdjustment,
   FinishedGoodsStockSummary,
+  LedgerEntry,
 } from '@/hooks/useFinishedGoodsStock';
 import { useProducts } from '@/hooks/useProducts';
 import { ProductSelector } from '@/components/selectors/ProductSelector';
@@ -53,8 +56,29 @@ import {
   PackageCheck,
   Settings2,
   Plus,
+  ListFilter,
+  ExternalLink,
+  X,
 } from 'lucide-react';
 import { format } from 'date-fns';
+
+// Transaction types present in the FG ledger, for the search-filter dropdown.
+const TXN_TYPES = [
+  'adjustment',
+  'opening_balance',
+  'production_receipt',
+  'dispatch',
+  'dispatch_return',
+  'assembly_reserve',
+  'assembly_issue',
+  'assembly_output',
+];
+
+// Human label for a ledger row's source ("where it posted").
+function sourceLabel(e: LedgerEntry): string {
+  const ref = (e.reference_type || '').replace(/_/g, ' ');
+  return ref ? ref.replace(/\b\w/g, (c) => c.toUpperCase()) : '—';
+}
 
 // Phase 3: balances derive from the stock_transactions ledger.
 // Production-lot detail (open/hold lots, machines) reconnects in Phase 5.
@@ -196,6 +220,219 @@ function AdjustmentDialog({
   );
 }
 
+/**
+ * Cross-product ledger search. Lets you hunt a single stock entry by product,
+ * client, remarks, reference, type, date range or amount — see exactly where it
+ * was posted, jump to the product snapshot, or open a correcting adjustment,
+ * all without leaving the page.
+ */
+function LedgerSearch({
+  canAdjust,
+  onCorrect,
+  onOpenSnapshot,
+}: {
+  canAdjust: boolean;
+  onCorrect: (e: LedgerEntry) => void;
+  onOpenSnapshot: (productId: string) => void;
+}) {
+  const [search, setSearch] = useState('');
+  const [type, setType] = useState('all');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [minAmt, setMinAmt] = useState('');
+  const [maxAmt, setMaxAmt] = useState('');
+
+  const { data: entries = [], isLoading, isFetching } = useStockLedger({ from, to, type });
+
+  const results = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const min = minAmt === '' ? null : Math.abs(Number(minAmt));
+    const max = maxAmt === '' ? null : Math.abs(Number(maxAmt));
+    return entries.filter((e) => {
+      const matchesText =
+        !q ||
+        e.product_name.toLowerCase().includes(q) ||
+        e.product_code.toLowerCase().includes(q) ||
+        (e.client_name || '').toLowerCase().includes(q) ||
+        (e.remarks || '').toLowerCase().includes(q) ||
+        (e.reference_type || '').toLowerCase().includes(q) ||
+        (e.reference_id || '').toLowerCase().includes(q);
+      const abs = Math.abs(e.quantity);
+      const matchesMin = min === null || abs >= min;
+      const matchesMax = max === null || abs <= max;
+      return matchesText && matchesMin && matchesMax;
+    });
+  }, [entries, search, minAmt, maxAmt]);
+
+  const hasFilters = search || type !== 'all' || from || to || minAmt || maxAmt;
+  const clearFilters = () => {
+    setSearch('');
+    setType('all');
+    setFrom('');
+    setTo('');
+    setMinAmt('');
+    setMaxAmt('');
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Filters */}
+      <div className="rounded-lg border bg-muted/20 p-4 space-y-3">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search product, client, remarks or document no. (e.g. Blowtec, DC-2603...)"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger className="w-full md:w-[200px]">
+              <SelectValue placeholder="All Entry Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Entry Types</SelectItem>
+              {TXN_TYPES.map((t) => (
+                <SelectItem key={t} value={t} className="capitalize">
+                  {t.replace(/_/g, ' ')}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col md:flex-row gap-3 md:items-end">
+          <div className="flex-1">
+            <Label className="text-xs">From date</Label>
+            <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+          </div>
+          <div className="flex-1">
+            <Label className="text-xs">To date</Label>
+            <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+          </div>
+          <div className="flex-1">
+            <Label className="text-xs">Min qty (abs)</Label>
+            <Input type="number" placeholder="e.g. 250000" value={minAmt} onChange={(e) => setMinAmt(e.target.value)} />
+          </div>
+          <div className="flex-1">
+            <Label className="text-xs">Max qty (abs)</Label>
+            <Input type="number" placeholder="e.g. 340000" value={maxAmt} onChange={(e) => setMaxAmt(e.target.value)} />
+          </div>
+          {hasFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1">
+              <X size={14} /> Clear
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          {isLoading ? 'Loading…' : `${results.length} matching ${results.length === 1 ? 'entry' : 'entries'}`}
+          {isFetching && !isLoading && ' · refreshing…'}
+        </span>
+        <span className="text-xs">Newest 1,000 entries in range</span>
+      </div>
+
+      {/* Results */}
+      <div className="border rounded-lg overflow-hidden overflow-x-auto">
+        <Table className="min-w-[900px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Product / Client</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Qty</TableHead>
+              <TableHead className="text-right">Balance After</TableHead>
+              <TableHead>Posted From</TableHead>
+              <TableHead className="w-[120px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                </TableCell>
+              </TableRow>
+            ) : results.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  {hasFilters
+                    ? 'No ledger entries match these filters.'
+                    : 'Search or filter to locate a specific ledger entry.'}
+                </TableCell>
+              </TableRow>
+            ) : (
+              results.map((e) => (
+                <TableRow key={e.id}>
+                  <TableCell className="text-muted-foreground whitespace-nowrap text-sm">
+                    {format(new Date(e.created_at), 'dd/MM/yy HH:mm')}
+                  </TableCell>
+                  <TableCell>
+                    <p className="font-medium">{e.product_name}</p>
+                    <p className="text-xs text-muted-foreground font-mono">{e.product_code}</p>
+                    {e.client_name && (
+                      <Badge variant="outline" className="mt-1 text-xs">
+                        {e.client_name}
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {e.transaction_type.replace(/_/g, ' ')}
+                    </Badge>
+                  </TableCell>
+                  <TableCell
+                    className={`text-right font-mono ${e.quantity < 0 ? 'text-destructive' : 'text-success'}`}
+                  >
+                    {e.quantity > 0 ? '+' : ''}
+                    {e.quantity.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-right font-mono">{e.balance_after.toLocaleString()}</TableCell>
+                  <TableCell>
+                    <div className="text-sm">{sourceLabel(e)}</div>
+                    {e.remarks && (
+                      <div className="text-xs text-muted-foreground truncate max-w-[220px]" title={e.remarks}>
+                        {e.remarks}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2"
+                        title="Open this product's snapshot"
+                        onClick={() => onOpenSnapshot(e.product_id)}
+                      >
+                        <ExternalLink size={14} />
+                      </Button>
+                      {canAdjust && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2"
+                          title="Verify / correct via adjustment"
+                          onClick={() => onCorrect(e)}
+                        >
+                          <Settings2 size={14} />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
 export default function FinishedGoodsStock() {
   const { data: stockSummary = [], isLoading } = useFinishedGoodsStock();
   const { isAdmin } = useAuth();
@@ -207,6 +444,7 @@ export default function FinishedGoodsStock() {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [adjustPreset, setAdjustPreset] = useState<AdjustState | null>(null);
+  const [tab, setTab] = useState('balances');
 
   // Extract unique clients for filter
   const clients = useMemo(() => {
@@ -257,6 +495,27 @@ export default function FinishedGoodsStock() {
     setAdjustOpen(true);
   };
 
+  // Correct/verify a ledger entry found via search: open the adjustment dialog
+  // for that product, then return to the search — never leaving the page.
+  const openAdjustForEntry = (e: LedgerEntry) => {
+    const current = stockSummary.find((s) => s.product_id === e.product_id)?.balance ?? e.balance_after;
+    setAdjustPreset({
+      product_id: e.product_id,
+      product_label: `${e.product_code} — ${e.product_name}`,
+      current,
+    });
+    setAdjustOpen(true);
+  };
+
+  // Jump from a search hit to that product's balance snapshot (expanded ledger).
+  const openSnapshot = (productId: string) => {
+    setTab('balances');
+    setClientFilter('all');
+    const code = stockSummary.find((s) => s.product_id === productId)?.product_code;
+    if (code) setSearch(code);
+    setExpandedRows((prev) => new Set(prev).add(productId));
+  };
+
   return (
     <MainLayout
       title="Finished Goods Stock"
@@ -271,6 +530,17 @@ export default function FinishedGoodsStock() {
           )}
         </div>
 
+        <Tabs value={tab} onValueChange={setTab} className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="balances" className="gap-1">
+              <Boxes size={14} /> Balances
+            </TabsTrigger>
+            <TabsTrigger value="ledger" className="gap-1">
+              <ListFilter size={14} /> Ledger Search
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="balances" className="space-y-6 mt-0">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
@@ -458,6 +728,16 @@ export default function FinishedGoodsStock() {
             </TableBody>
           </Table>
         </div>
+          </TabsContent>
+
+          <TabsContent value="ledger" className="mt-0">
+            <LedgerSearch
+              canAdjust={canAdjust}
+              onCorrect={openAdjustForEntry}
+              onOpenSnapshot={openSnapshot}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <AdjustmentDialog

@@ -120,6 +120,85 @@ export function useProductStockTransactions(productId: string | null) {
   });
 }
 
+export interface LedgerSearchFilters {
+  from?: string; // yyyy-MM-dd (inclusive)
+  to?: string; // yyyy-MM-dd (inclusive)
+  type?: string; // transaction_type or 'all'
+}
+
+export interface LedgerEntry {
+  id: string;
+  product_id: string;
+  product_code: string;
+  product_name: string;
+  client_id: string | null;
+  client_name: string | null;
+  transaction_type: string;
+  quantity: number;
+  balance_after: number;
+  reference_type: string | null;
+  reference_id: string | null;
+  remarks: string | null;
+  created_at: string;
+}
+
+/**
+ * Cross-product ledger search. Date range and transaction type are pushed to
+ * the server; free-text and amount filtering happen client-side so the caller
+ * can search product / client / remarks / reference without extra round-trips.
+ */
+export function useStockLedger(filters: LedgerSearchFilters) {
+  const { from, to, type } = filters;
+  return useQuery({
+    queryKey: ['fg-ledger-search', from || '', to || '', type || 'all'],
+    queryFn: async () => {
+      let q = supabase
+        .from('stock_transactions')
+        .select(
+          'id, product_id, transaction_type, quantity, balance_after, reference_type, reference_id, remarks, created_at, product:products(code, name, client_id, client:clients(name))',
+        )
+        .order('created_at', { ascending: false })
+        .limit(1000);
+
+      if (from) q = q.gte('created_at', `${from}T00:00:00`);
+      if (to) q = q.lte('created_at', `${to}T23:59:59.999`);
+      if (type && type !== 'all') q = q.eq('transaction_type', type);
+
+      const { data, error } = await q;
+      if (error) throw error;
+
+      type RawRow = {
+        id: string;
+        product_id: string;
+        transaction_type: string;
+        quantity: number | null;
+        balance_after: number | null;
+        reference_type: string | null;
+        reference_id: string | null;
+        remarks: string | null;
+        created_at: string;
+        product: { code: string; name: string; client_id: string | null; client: { name: string } | null } | null;
+      };
+
+      return ((data || []) as unknown as RawRow[]).map((r): LedgerEntry => ({
+        id: r.id,
+        product_id: r.product_id,
+        product_code: r.product?.code || '—',
+        product_name: r.product?.name || '—',
+        client_id: r.product?.client_id || null,
+        client_name: r.product?.client?.name || null,
+        transaction_type: r.transaction_type,
+        quantity: Number(r.quantity || 0),
+        balance_after: Number(r.balance_after || 0),
+        reference_type: r.reference_type,
+        reference_id: r.reference_id,
+        remarks: r.remarks,
+        created_at: r.created_at,
+      }));
+    },
+  });
+}
+
 /** Post a manual opening-balance / adjustment entry into the FG ledger. */
 export function useCreateStockAdjustment() {
   const qc = useQueryClient();
