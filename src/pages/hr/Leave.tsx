@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ const statusVariant = (s: string): any =>
 
 export default function Leave() {
   const [open, setOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = usePersistedState('leave.status', 'all');
   const year = new Date().getFullYear();
 
   const { data: apps = [] } = useLeaveApplications({ status: statusFilter });

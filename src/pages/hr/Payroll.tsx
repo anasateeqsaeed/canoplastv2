@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { createPortal } from 'react-dom';
 import { format, parseISO } from 'date-fns';
 import { MainLayout } from '@/components/layout/MainLayout';
@@ -30,7 +31,7 @@ import {
 type TabKey = 'run' | 'payslips' | 'history';
 
 export default function Payroll() {
-  const [tab, setTab] = useState<TabKey>('run');
+  const [tab, setTab] = usePersistedState<TabKey>('payroll.tab', 'run');
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [genOpen, setGenOpen] = useState(false);
 

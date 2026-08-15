@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { usePersistedState, usePersistedDateState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,18 +30,18 @@ export default function DispatchPage() {
   const { roles } = useAuth();
   const isAdmin = roles.includes('admin');
   const { can } = useMyPermissions();
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = usePersistedState('dispatch.status', 'all');
   const [createOpen, setCreateOpen] = useState(false);
   const [viewDispatch, setViewDispatch] = useState<any>(null);
   const [returnDispatch, setReturnDispatch] = useState<any>(null);
   const [editDispatch, setEditDispatch] = useState<any>(null);
-  const [selectedClientIds, setSelectedClientIds] = useState<string[]>([]);
+  const [selectedClientIds, setSelectedClientIds] = usePersistedState<string[]>('dispatch.clients', []);
   const [clientPickerOpen, setClientPickerOpen] = useState(false);
-  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [selectedProductIds, setSelectedProductIds] = usePersistedState<string[]>('dispatch.products', []);
   const [productPickerOpen, setProductPickerOpen] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
-  const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
+  const [searchText, setSearchText] = usePersistedState('dispatch.search', '');
+  const [dateFrom, setDateFrom] = usePersistedDateState('dispatch.dateFrom');
+  const [dateTo, setDateTo] = usePersistedDateState('dispatch.dateTo');
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const { data: dispatches = [], isLoading } = useDispatches(statusFilter);
   const dispatchCreatorIds = useMemo(

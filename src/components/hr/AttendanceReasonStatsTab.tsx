@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { format, startOfMonth } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -31,9 +32,9 @@ function csv(filename: string, rows: (string | number)[][]) {
 export function AttendanceReasonStatsTab() {
   const today = format(new Date(), 'yyyy-MM-dd');
   const monthStart = format(startOfMonth(new Date()), 'yyyy-MM-dd');
-  const [dateFrom, setDateFrom] = useState(monthStart);
-  const [dateTo, setDateTo] = useState(today);
-  const [threshold, setThreshold] = useState(3);
+  const [dateFrom, setDateFrom] = usePersistedState('attendance.reasonStats.from', monthStart);
+  const [dateTo, setDateTo] = usePersistedState('attendance.reasonStats.to', today);
+  const [threshold, setThreshold] = usePersistedState('attendance.reasonStats.threshold', 3);
   const [manageOpen, setManageOpen] = useState(false);
 
   const { data: raw = [], isLoading } = useReasonStats({

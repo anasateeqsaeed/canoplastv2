@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,10 +38,14 @@ export default function SalesOrders() {
   const navigate = useNavigate();
   const { roles } = useAuth();
   const isAdmin = roles.includes('admin');
-  const [status, setStatus] = useState('all');
-  const [clientId, setClientId] = useState('all');
-  const [startDate, setStartDate] = useState(format(new Date(Date.now() - 90 * 86400_000), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [status, setStatus] = usePersistedState('sales-orders.status', 'all');
+  const [clientId, setClientId] = usePersistedState('sales-orders.client', 'all');
+  const [startDate, setStartDate] = usePersistedState('sales-orders.startDate', () =>
+    format(new Date(Date.now() - 90 * 86400_000), 'yyyy-MM-dd'),
+  );
+  const [endDate, setEndDate] = usePersistedState('sales-orders.endDate', () =>
+    format(new Date(), 'yyyy-MM-dd'),
+  );
 
   const { data: clients = [] } = useClients();
   const { data: orders = [], isLoading } = useSalesOrders({ status, clientId, startDate, endDate });

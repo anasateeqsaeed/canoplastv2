@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,7 +8,7 @@ import { PermissionMatrixTab } from '@/components/settings/PermissionMatrixTab';
 import { RoleActivityTab } from '@/components/settings/RoleActivityTab';
 
 export default function RoleManagement() {
-  const [activeTab, setActiveTab] = useState('roles');
+  const [activeTab, setActiveTab] = usePersistedState('role-management.tab', 'roles');
 
   return (
     <MainLayout title="Role Management" subtitle="Manage user roles and permissions">

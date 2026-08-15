@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,8 +53,11 @@ export default function StoreMaster() {
   const [editingStore, setEditingStore] = useState<Store | null>(null);
   const [editingRack, setEditingRack] = useState<StorageLocation | null>(null);
   const [selectedRackId, setSelectedRackId] = useState<string | null>(null);
-  const [rackSearch, setRackSearch] = useState('');
-  const [rackFilter, setRackFilter] = useState<'all' | 'empty' | 'has-stock'>('all');
+  const [rackSearch, setRackSearch] = usePersistedState('store-master.rackSearch', '');
+  const [rackFilter, setRackFilter] = usePersistedState<'all' | 'empty' | 'has-stock'>(
+    'store-master.rackFilter',
+    'all',
+  );
   const [showMoveDialog, setShowMoveDialog] = useState(false);
   const [movingLot, setMovingLot] = useState<RackLot | null>(null);
   

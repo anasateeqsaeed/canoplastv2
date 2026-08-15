@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -79,8 +80,8 @@ export default function PurchaseOrders() {
   const isStoreIncharge = roles.includes('store_incharge');
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = usePersistedState<string>('purchase-orders.status', 'all');
+  const [searchQuery, setSearchQuery] = usePersistedState('purchase-orders.search', '');
   
   const { data: purchaseOrders = [], isLoading } = usePurchaseOrders(
     statusFilter !== 'all' ? { status: statusFilter as POStatus } : undefined

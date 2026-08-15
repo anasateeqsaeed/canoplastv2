@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -53,9 +54,12 @@ const ENTITY_LABEL: Record<string, string> = {
 };
 
 export default function HRAuditLog() {
-  const [entityType, setEntityType] = useState<HRAuditEntityType | 'all'>('all');
-  const [from, setFrom] = useState<string>('');
-  const [to, setTo] = useState<string>('');
+  const [entityType, setEntityType] = usePersistedState<HRAuditEntityType | 'all'>(
+    'hr-audit-log.entityType',
+    'all',
+  );
+  const [from, setFrom] = usePersistedState<string>('hr-audit-log.from', '');
+  const [to, setTo] = usePersistedState<string>('hr-audit-log.to', '');
 
   const { data, isLoading } = useHRAuditLog({
     entity_type: entityType,

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,8 +44,10 @@ function getWeekStart(d: Date): Date {
 }
 
 export function WeeklyRosterView() {
-  const [anchor, setAnchor] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [deptFilter, setDeptFilter] = useState<string>('all');
+  const [anchor, setAnchor] = usePersistedState('attendance.roster.anchor', () =>
+    format(new Date(), 'yyyy-MM-dd'),
+  );
+  const [deptFilter, setDeptFilter] = usePersistedState<string>('attendance.roster.dept', 'all');
 
   const weekStart = useMemo(() => getWeekStart(parseISO(anchor)), [anchor]);
   const days = useMemo(

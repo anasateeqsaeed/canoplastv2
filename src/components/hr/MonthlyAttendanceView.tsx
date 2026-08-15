@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,12 @@ import { AttendanceStatusPicker, AttendanceLegend } from './AttendanceStatusPick
 import { cn } from '@/lib/utils';
 
 export function MonthlyAttendanceView() {
-  const [month, setMonth] = useState(new Date());
+  // Persist the viewed month (as yyyy-MM) so it survives navigating away and back.
+  const [monthStr, setMonthStr] = usePersistedState('attendance.monthly.month', () =>
+    format(new Date(), 'yyyy-MM'),
+  );
+  const month = useMemo(() => new Date(monthStr + '-01'), [monthStr]);
+  const setMonth = (d: Date) => setMonthStr(format(d, 'yyyy-MM'));
   const start = startOfMonth(month);
   const end = endOfMonth(month);
   const fromStr = format(start, 'yyyy-MM-dd');

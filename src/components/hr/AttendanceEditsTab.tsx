@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { format, startOfMonth } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -51,11 +52,14 @@ export function AttendanceEditsTab() {
   const today = format(new Date(), 'yyyy-MM-dd');
   const monthStart = format(startOfMonth(new Date()), 'yyyy-MM-dd');
 
-  const [dateFrom, setDateFrom] = useState(monthStart);
-  const [dateTo, setDateTo] = useState(today);
+  const [dateFrom, setDateFrom] = usePersistedState('attendance.edits.from', monthStart);
+  const [dateTo, setDateTo] = usePersistedState('attendance.edits.to', today);
   const [personId, setPersonId] = useState<string>('all');
-  const [actorEmail, setActorEmail] = useState('');
-  const [action, setAction] = useState<'all' | 'insert' | 'update'>('all');
+  const [actorEmail, setActorEmail] = usePersistedState('attendance.edits.actor', '');
+  const [action, setAction] = usePersistedState<'all' | 'insert' | 'update'>(
+    'attendance.edits.action',
+    'all',
+  );
   const [reasonCode, setReasonCode] = useState<string>('all');
   const [history, setHistory] = useState<{ person_id: string; person_type: PersonType; name: string; date: string } | null>(null);
 

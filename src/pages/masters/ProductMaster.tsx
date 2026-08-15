@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { DataTable, Column } from '@/components/masters/DataTable';
 import { StatusBadge } from '@/components/masters/StatusBadge';
@@ -161,11 +162,11 @@ export default function ProductMaster() {
   const [quickAddClientDialog, setQuickAddClientDialog] = useState(false);
 
   // Filter state for Product Master shortlist
-  const [filterCategory, setFilterCategory] = useState('all');
-  const [filterType, setFilterType] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterClientIds, setFilterClientIds] = useState<string[]>([]); // empty = all; may contain 'own' for no-client products
-  const [clientFilterSearch, setClientFilterSearch] = useState('');
+  const [filterCategory, setFilterCategory] = usePersistedState('product-master.category', 'all');
+  const [filterType, setFilterType] = usePersistedState('product-master.type', 'all');
+  const [filterStatus, setFilterStatus] = usePersistedState('product-master.status', 'all');
+  const [filterClientIds, setFilterClientIds] = usePersistedState<string[]>('product-master.clients', []); // empty = all; may contain 'own' for no-client products
+  const [clientFilterSearch, setClientFilterSearch] = usePersistedState('product-master.clientSearch', '');
   const [rateHistoryProduct, setRateHistoryProduct] = useState<ProductWithRelations | null>(null);
 
   const importInputRef = useRef<HTMLInputElement>(null);

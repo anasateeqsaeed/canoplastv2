@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,8 +33,8 @@ const SHIFTS = [
 export default function MaterialReturn() {
   const ALL_STATUS = '__all__';
   const [showNewDialog, setShowNewDialog] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [searchTerm, setSearchTerm] = usePersistedState('material-return.search', '');
+  const [statusFilter, setStatusFilter] = usePersistedState<string>('material-return.status', '');
   const { returns, isLoading, createReturn, updateReturnStatus } = useMaterialReturns(statusFilter || undefined);
   const { locations } = useStorageLocations();
   // Machine selection reconnects in Phase 5 (machines table)

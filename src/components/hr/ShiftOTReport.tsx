@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,10 +30,14 @@ interface Row {
 
 export function ShiftOTReport() {
   const today = new Date();
-  const [from, setFrom] = useState(format(startOfMonth(today), 'yyyy-MM-dd'));
-  const [to, setTo] = useState(format(endOfMonth(today), 'yyyy-MM-dd'));
-  const [deptFilter, setDeptFilter] = useState<string>('all');
-  const [shiftFilter, setShiftFilter] = useState<string>('all');
+  const [from, setFrom] = usePersistedState('attendance.shiftOt.from', () =>
+    format(startOfMonth(today), 'yyyy-MM-dd'),
+  );
+  const [to, setTo] = usePersistedState('attendance.shiftOt.to', () =>
+    format(endOfMonth(today), 'yyyy-MM-dd'),
+  );
+  const [deptFilter, setDeptFilter] = usePersistedState<string>('attendance.shiftOt.dept', 'all');
+  const [shiftFilter, setShiftFilter] = usePersistedState<string>('attendance.shiftOt.shift', 'all');
 
   const { data: people = [] } = useAttendancePeople();
   const { data: records = [] } = useAttendanceByRange(from, to);

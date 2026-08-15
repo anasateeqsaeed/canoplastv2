@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,10 +38,10 @@ export default function Employees() {
   const { data: departments = [] } = useDepartments();
   const toggle = useToggleEmployeeStatus();
 
-  const [search, setSearch] = useState('');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterDept, setFilterDept] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('active');
+  const [search, setSearch] = usePersistedState('employees.search', '');
+  const [filterType, setFilterType] = usePersistedState<string>('employees.type', 'all');
+  const [filterDept, setFilterDept] = usePersistedState<string>('employees.dept', 'all');
+  const [filterStatus, setFilterStatus] = usePersistedState<string>('employees.status', 'active');
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);

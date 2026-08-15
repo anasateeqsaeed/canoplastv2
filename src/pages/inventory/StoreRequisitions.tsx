@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { format } from 'date-fns';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -62,8 +63,8 @@ const statusConfig: Record<string, { label: string; variant: 'default' | 'second
 
 export default function StoreRequisitions() {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = usePersistedState('store-requisitions.status', 'all');
+  const [searchQuery, setSearchQuery] = usePersistedState('store-requisitions.search', '');
   const [selectedRequisition, setSelectedRequisition] = useState<StoreRequisition | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -64,8 +65,8 @@ const INITIAL_FORM_DATA: FormData = {
 export default function MaterialIssue() {
   const ALL_STATUS = '__all__';
   const [showNewDialog, setShowNewDialog] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [searchTerm, setSearchTerm] = usePersistedState('material-issue.search', '');
+  const [statusFilter, setStatusFilter] = usePersistedState<string>('material-issue.status', '');
   const { issues, isLoading, createIssue, updateIssueStatus } = useMaterialIssues(statusFilter || undefined);
   const { data: departments = [] } = useDepartments();
   const { data: availableLots = [], isLoading: lotsLoading } = useAvailableLotsByMaterial();

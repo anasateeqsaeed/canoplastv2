@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -65,8 +66,8 @@ export default function StockAdjustmentLog() {
   const { isAdmin } = useAuth();
   const admin = isAdmin();
   const { data = [], isLoading } = useStockAdjustmentLog();
-  const [search, setSearch] = useState('');
-  const [scope, setScope] = useState<string>('all');
+  const [search, setSearch] = usePersistedState('stock-adjustment-log.search', '');
+  const [scope, setScope] = usePersistedState<string>('stock-adjustment-log.scope', 'all');
 
   // Opening-balance launcher state (FG/component scopes reconnect in Phase 3/5)
   const [pickerOpen, setPickerOpen] = useState(false);

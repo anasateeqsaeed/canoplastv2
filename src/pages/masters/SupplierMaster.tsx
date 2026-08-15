@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { DataTable, Column } from '@/components/masters/DataTable';
 import { StatusBadge } from '@/components/masters/StatusBadge';
@@ -41,7 +42,10 @@ export default function SupplierMaster() {
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierWithClient | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewMode, setIsViewMode] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<SupplierType | 'all'>('all');
+  const [activeFilter, setActiveFilter] = usePersistedState<SupplierType | 'all'>(
+    'supplier-master.filter',
+    'all',
+  );
   const [formSupplierType, setFormSupplierType] = useState<SupplierType>('vendor');
   const [selectedProcessTypes, setSelectedProcessTypes] = useState<string[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>('');

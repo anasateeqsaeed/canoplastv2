@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -46,8 +47,8 @@ export default function RawMaterialStock() {
   const { data: stockSummary = [], isLoading } = useRawMaterialStock();
   const { isAdmin } = useAuth();
   const admin = isAdmin();
-  const [search, setSearch] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [search, setSearch] = usePersistedState('raw-material-stock.search', '');
+  const [typeFilter, setTypeFilter] = usePersistedState<string>('raw-material-stock.type', 'all');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [adjustItem, setAdjustItem] = useState<RawMaterialStockSummary | null>(null);
 

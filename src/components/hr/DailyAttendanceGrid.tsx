@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,8 +36,8 @@ interface RowState {
 
 export function DailyAttendanceGrid() {
   const { today: businessToday } = useBusinessToday();
-  const [date, setDate] = useState(businessToday);
-  const [deptFilter, setDeptFilter] = useState<string>('all');
+  const [date, setDate] = usePersistedState('attendance.daily.date', businessToday);
+  const [deptFilter, setDeptFilter] = usePersistedState<string>('attendance.daily.dept', 'all');
   const [importOpen, setImportOpen] = useState(false);
   const [historyFor, setHistoryFor] = useState<{ person_id: string; person_type: PersonType; name: string } | null>(null);
   const { isAdmin } = useAuth();

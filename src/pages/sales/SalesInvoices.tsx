@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,10 +21,14 @@ export default function SalesInvoicesPage() {
   const navigate = useNavigate();
   const { roles } = useAuth();
   const isAdmin = roles.includes('admin');
-  const [status, setStatus] = useState('all');
-  const [clientId, setClientId] = useState<string>('all');
-  const [startDate, setStartDate] = useState(format(new Date(Date.now() - 30 * 86400_000), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [status, setStatus] = usePersistedState('sales-invoices.status', 'all');
+  const [clientId, setClientId] = usePersistedState<string>('sales-invoices.client', 'all');
+  const [startDate, setStartDate] = usePersistedState('sales-invoices.startDate', () =>
+    format(new Date(Date.now() - 30 * 86400_000), 'yyyy-MM-dd'),
+  );
+  const [endDate, setEndDate] = usePersistedState('sales-invoices.endDate', () =>
+    format(new Date(), 'yyyy-MM-dd'),
+  );
   const [generateOpen, setGenerateOpen] = useState(false);
 
   const { data: clients = [] } = useClients();

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,10 +38,14 @@ const STATUS_COLORS: Record<QuotationStatus, string> = {
 export default function Quotations() {
   const { roles } = useAuth();
   const isAdmin = roles.includes('admin');
-  const [status, setStatus] = useState('all');
-  const [clientId, setClientId] = useState('all');
-  const [startDate, setStartDate] = useState(format(new Date(Date.now() - 90 * 86400_000), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [status, setStatus] = usePersistedState('quotations.status', 'all');
+  const [clientId, setClientId] = usePersistedState('quotations.client', 'all');
+  const [startDate, setStartDate] = usePersistedState('quotations.startDate', () =>
+    format(new Date(Date.now() - 90 * 86400_000), 'yyyy-MM-dd'),
+  );
+  const [endDate, setEndDate] = usePersistedState('quotations.endDate', () =>
+    format(new Date(), 'yyyy-MM-dd'),
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Quotation | null>(null);
   const [acceptOpen, setAcceptOpen] = useState(false);

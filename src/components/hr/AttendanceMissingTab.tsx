@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { format, startOfMonth } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,9 +49,9 @@ export function AttendanceMissingTab() {
   const today = format(new Date(), 'yyyy-MM-dd');
   const monthStart = format(startOfMonth(new Date()), 'yyyy-MM-dd');
 
-  const [from, setFrom] = useState(monthStart);
-  const [to, setTo] = useState(today);
-  const [departmentId, setDepartmentId] = useState<string>('all');
+  const [from, setFrom] = usePersistedState('attendance.missing.from', monthStart);
+  const [to, setTo] = usePersistedState('attendance.missing.to', today);
+  const [departmentId, setDepartmentId] = usePersistedState<string>('attendance.missing.dept', 'all');
 
   const { data: people = [] } = useAttendancePeople();
   const departments = useMemo(() => {

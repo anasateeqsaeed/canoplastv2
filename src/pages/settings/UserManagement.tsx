@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { useProfiles, useAssignRole, useRemoveRole, type ProfileWithRoles } from '@/hooks/useUserRoles';
 import { RoleGuard } from '@/components/auth/RoleGuard';
@@ -176,7 +177,7 @@ export default function UserManagement() {
   const [editIsActive, setEditIsActive] = useState(true);
   
   // Search filter for user table
-  const [searchFilter, setSearchFilter] = useState('');
+  const [searchFilter, setSearchFilter] = usePersistedState('user-management.search', '');
   
   // Delete confirmation
   const [deleteConfirmUser, setDeleteConfirmUser] = useState<ProfileWithRoles | null>(null);

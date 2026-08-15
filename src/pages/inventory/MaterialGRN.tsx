@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { useSearchParams } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -73,8 +74,8 @@ const statusIcons: Record<string, React.ReactNode> = {
 export default function MaterialGRN() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = usePersistedState<string>('material-grn.status', 'all');
+  const [searchQuery, setSearchQuery] = usePersistedState('material-grn.search', '');
   const [putAwayLot, setPutAwayLot] = useState<MaterialLot | null>(null);
   
   // Quick add dialogs
