@@ -145,9 +145,7 @@ export function useCreateDispatch() {
           if (!item.product_id || !item.total_qty) continue;
 
           const currentStock = await fetchProductBalance(item.product_id);
-          // provisional only — trg_recompute_stock_balance rewrites the chain in
-          // date order after insert; negative balances allowed per system design
-          const newStock = currentStock - item.total_qty;
+          const newStock = currentStock - item.total_qty; // negative allowed per system design
 
           const { error: txnErr } = await supabase.from('stock_transactions').insert({
             product_id: item.product_id,

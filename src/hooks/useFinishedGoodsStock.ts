@@ -5,14 +5,6 @@ import { toast } from 'sonner';
 // Phase 3: FG stock is derived purely from the stock_transactions ledger.
 // Production lot inflows reconnect in Phase 5; until then opening balances and
 // corrections are posted as manual adjustment entries so dispatch stays usable.
-//
-// NOTE: `balance_after` is a DERIVED running balance maintained server-side by
-// the `trg_recompute_stock_balance` trigger, which recomputes the whole chain in
-// chronological (created_at, id) order after every insert/update/delete. The value
-// this client sends on insert is only a provisional placeholder (the column is NOT
-// NULL) — the trigger overwrites it, so back-dated entries no longer corrupt the
-// month-end closing balances. Never treat a client-computed balance_after as truth;
-// read it back after the write, or sum `quantity` in date order.
 
 export interface StockTransaction {
   id: string;
@@ -142,7 +134,7 @@ export function useCreateStockAdjustment() {
       const current = await fetchProductBalance(payload.product_id);
       const delta = payload.mode === 'set' ? payload.value - current : payload.value;
       if (delta === 0) throw new Error('No change — quantity is already ' + current);
-      const balanceAfter = current + delta; // provisional only — trg_recompute_stock_balance corrects it
+      const balanceAfter = current + delta;
       const { data: { user } } = await supabase.auth.getUser();
       const { error } = await supabase.from('stock_transactions').insert({
         product_id: payload.product_id,
