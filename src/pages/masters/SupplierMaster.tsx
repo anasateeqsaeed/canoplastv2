@@ -4,6 +4,8 @@ import { DataTable, Column } from '@/components/masters/DataTable';
 import { StatusBadge } from '@/components/masters/StatusBadge';
 import { useSuppliers, useCreateSupplier, useUpdateSupplier, useDeleteSupplier, Supplier, SupplierType, LaborRateUnit, SupplierWithClient } from '@/hooks/useSuppliers';
 import { useClients } from '@/hooks/useClients';
+import { useRealtimeSync } from '@/hooks/useRealtimeSync';
+import { useAuth } from '@/hooks/useAuth';
 import { Factory, Users, Banknote, CheckCircle, UserCheck } from 'lucide-react';
 import {
   Dialog,
@@ -32,6 +34,7 @@ const EXPENSE_CATEGORIES = ['Tools', 'Spares', 'Colors', 'Consumables', 'Mainten
 const VENDOR_CATEGORIES = ['Raw Material', 'Spare Parts', 'Services', 'Consumables'];
 
 export default function SupplierMaster() {
+  const { user } = useAuth();
   const { data: suppliers = [], isLoading } = useSuppliers();
   const { data: clients = [] } = useClients();
   const createSupplier = useCreateSupplier();
@@ -45,6 +48,16 @@ export default function SupplierMaster() {
   const [formSupplierType, setFormSupplierType] = useState<SupplierType>('vendor');
   const [selectedProcessTypes, setSelectedProcessTypes] = useState<string[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>('');
+
+  // Keep the supplier list live from other users' edits, but hold refreshes
+  // while the form dialog is open so an in-progress edit isn't clobbered.
+  // The base key ['suppliers'] partial-matches every ['suppliers', type] query.
+  useRealtimeSync({
+    table: 'suppliers',
+    queryKey: ['suppliers'],
+    isFormActive: isDialogOpen,
+    enabled: !!user,
+  });
 
   const getTypeConfig = (type: string) => {
     return SUPPLIER_TYPES.find(t => t.value === type) || SUPPLIER_TYPES[0];
