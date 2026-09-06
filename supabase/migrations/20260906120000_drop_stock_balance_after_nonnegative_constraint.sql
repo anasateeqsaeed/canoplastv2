@@ -1,0 +1,38 @@
+-- Drop stock_transactions.chk_balance_after_nonnegative.
+--
+-- Symptom: saving an Assembly Entry fails with
+--   'new row for relation "stock_transactions" violates check constraint
+--    "chk_balance_after_nonnegative"'.
+--
+-- Root cause: balance_after is a chronological running-balance column that
+-- legitimately dips below zero in this system:
+--   * FG products can be dispatched before the supplying assembly/production
+--     output is ever posted to the ledger (the "production made but stock nil"
+--     case fixed by 20260830142754_assembly_output_autopost_to_stock_ledger),
+--     so their latest balance_after is negative.
+--   * assembly_output is an INFLOW posted as balance_after = latest_balance + qty.
+--     For a product whose ledger is already negative, a single hour's output is
+--     not enough to bring the balance back to >= 0, so the inflow row itself
+--     still carries a negative balance_after and is rejected by this constraint --
+--     blocking the very entries that would replenish the stock.
+--   * assembly_output (and other correction/inflow types) are NOT covered by
+--     enforce_stock_before_dispatch, so the failure surfaces as this raw
+--     constraint error instead of a friendly "Insufficient stock" message.
+--
+-- History: this constraint was deliberately removed on 2026-08-15 by
+-- 20260815082751_fix_stock_balance_after_recompute ("true chronological balances
+-- dip negative for 91 products ... Negative stock is already allowed by design
+-- elsewhere, so this constraint blocked truth"), and was only re-added as
+-- collateral by the same day's product-specific revert
+-- 20260815104416_revert_dusting_cap_101_stock_changes. The constraint was NOT
+-- VALID, so 617+ pre-existing negative rows were never covered by it anyway --
+-- it only ever half-guarded new writes.
+--
+-- Real over-issue protection does NOT depend on this constraint and stays in
+-- place: enforce_stock_before_dispatch (BEFORE INSERT on stock_transactions)
+-- still blocks dispatch / assembly_issue / assembly_reserve that would drive a
+-- balance negative, with a friendly message, and block_dispatch_if_negative_stock
+-- still guards dispatch status changes against the true SUM balance.
+
+alter table public.stock_transactions
+  drop constraint if exists chk_balance_after_nonnegative;
