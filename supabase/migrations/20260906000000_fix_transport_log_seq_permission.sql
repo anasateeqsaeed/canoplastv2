@@ -1,0 +1,16 @@
+-- Fix: "Failed to create transport log: permission denied for sequence transport_log_seq"
+--
+-- Inserting a transport_logs row fires the trigger trigger_generate_transport_log_number,
+-- whose function generate_transport_log_number() calls nextval('transport_log_seq') to
+-- build the human-readable log_number (e.g. TL-260906-001).
+--
+-- The function was defined SECURITY INVOKER, so nextval() executed as the calling role
+-- (authenticated), which has no USAGE privilege on transport_log_seq -> the insert failed
+-- with "permission denied for sequence transport_log_seq".
+--
+-- Every other number-generator in this database that needs elevated rights
+-- (generate_grn_number, generate_sales_invoice_number, generate_po_number,
+-- generate_dispatch_return_number, ...) is SECURITY DEFINER. Make this one consistent so
+-- nextval() runs as the sequence owner (postgres) instead of the caller. The function
+-- already pins search_path = public, which keeps SECURITY DEFINER safe.
+ALTER FUNCTION public.generate_transport_log_number() SECURITY DEFINER;
