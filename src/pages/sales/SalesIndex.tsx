@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
-import { FileText, ShoppingCart, Receipt, BarChart3 } from 'lucide-react';
+import { FileText, ShoppingCart, Receipt, BarChart3, Undo2, BookOpen } from 'lucide-react';
 import { useQuotations, useSalesOrders } from '@/hooks/useSales';
 
 export default function SalesIndex() {
@@ -24,6 +24,8 @@ export default function SalesIndex() {
     { label: 'Sales Orders', sub: `${openOrders} open`, icon: ShoppingCart, path: '/sales/orders', color: 'text-indigo-600' },
     { label: 'Overdue', sub: `${overdue} past due`, icon: ShoppingCart, path: '/sales/orders', color: 'text-red-600' },
     { label: 'Invoices', sub: 'Billing', icon: Receipt, path: '/sales/invoices', color: 'text-green-600' },
+    { label: 'Returns / Credit Notes', sub: 'Customer returns, gate-in & credit', icon: Undo2, path: '/sales/returns', color: 'text-orange-600' },
+    { label: 'Customer Ledger', sub: 'Qty & money account per customer', icon: BookOpen, path: '/sales/customer-ledger', color: 'text-teal-600' },
     { label: 'Sales Reports', sub: 'Summary & breakdowns', icon: BarChart3, path: '/reports/sales-summary', color: 'text-purple-600' },
   ];
 

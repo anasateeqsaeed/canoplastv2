@@ -97,6 +97,7 @@ const navItems: NavItem[] = [
       { label: 'Raw Material Stock', path: '/inventory/raw-materials' },
       { label: 'Adjustment Log', path: '/inventory/stock-adjustment-log' },
       { label: 'Dispatch', path: '/inventory/dispatch' },
+      { label: 'Customer Returns (Gate-In)', path: '/inventory/customer-returns' },
       { label: 'FG Stock', path: '/inventory/fg-stock' },
     ],
   },
@@ -108,6 +109,8 @@ const navItems: NavItem[] = [
       { label: 'Quotations', path: '/sales/quotations' },
       { label: 'Sales Orders', path: '/sales/orders' },
       { label: 'Invoices', path: '/sales/invoices' },
+      { label: 'Returns / Credit Notes', path: '/sales/returns' },
+      { label: 'Customer Ledger', path: '/sales/customer-ledger' },
     ],
   },
   {

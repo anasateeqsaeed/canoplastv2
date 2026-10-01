@@ -45,6 +45,9 @@ import SalesOrders from '@/pages/sales/SalesOrders';
 import SalesOrderDetail from '@/pages/sales/SalesOrderDetail';
 import SalesInvoices from '@/pages/sales/SalesInvoices';
 import SalesInvoiceDetail from '@/pages/sales/SalesInvoiceDetail';
+import SalesReturns from '@/pages/sales/SalesReturns';
+import SalesReturnDetail from '@/pages/sales/SalesReturnDetail';
+import CustomerLedger from '@/pages/sales/CustomerLedger';
 import ProductMaster from '@/pages/masters/ProductMaster';
 import DispatchPage from '@/pages/inventory/Dispatch';
 import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
@@ -123,6 +126,8 @@ const App = () => (
                 <Route path="/inventory/stock-adjustment-log" element={<ProtectedRoute><StockAdjustmentLog /></ProtectedRoute>} />
                 <Route path="/inventory/dispatch" element={<ProtectedRoute><DispatchPage /></ProtectedRoute>} />
                 <Route path="/inventory/fg-stock" element={<ProtectedRoute><FinishedGoodsStock /></ProtectedRoute>} />
+                <Route path="/inventory/customer-returns" element={<ProtectedRoute><SalesReturns /></ProtectedRoute>} />
+                <Route path="/inventory/customer-returns/:id" element={<ProtectedRoute><SalesReturnDetail /></ProtectedRoute>} />
                 <Route path="/inventory/*" element={<ProtectedRoute><ComingSoon title="Inventory" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
 
                 <Route path="/settings" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="General settings" /></ProtectedRoute>} />
@@ -146,6 +151,9 @@ const App = () => (
                 <Route path="/sales/orders/:id" element={<ProtectedRoute><SalesOrderDetail /></ProtectedRoute>} />
                 <Route path="/sales/invoices" element={<ProtectedRoute><SalesInvoices /></ProtectedRoute>} />
                 <Route path="/sales/invoices/:id" element={<ProtectedRoute><SalesInvoiceDetail /></ProtectedRoute>} />
+                <Route path="/sales/returns" element={<ProtectedRoute><SalesReturns /></ProtectedRoute>} />
+                <Route path="/sales/returns/:id" element={<ProtectedRoute><SalesReturnDetail /></ProtectedRoute>} />
+                <Route path="/sales/customer-ledger" element={<ProtectedRoute><CustomerLedger /></ProtectedRoute>} />
                 <Route path="/sales/*" element={<ProtectedRoute><ComingSoon title="Sales" subtitle="Customers master lives at /masters/clients" /></ProtectedRoute>} />
 
                 {stubModules.map((m) => (

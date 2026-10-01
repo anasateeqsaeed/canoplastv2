@@ -918,6 +918,7 @@ export type Database = {
           remarks: string | null
           returnable: boolean
           returned_at: string | null
+          sales_return_id: string | null
           security_guard: string | null
           status: string
           type: string
@@ -948,6 +949,7 @@ export type Database = {
           remarks?: string | null
           returnable?: boolean
           returned_at?: string | null
+          sales_return_id?: string | null
           security_guard?: string | null
           status?: string
           type?: string
@@ -978,6 +980,7 @@ export type Database = {
           remarks?: string | null
           returnable?: boolean
           returned_at?: string | null
+          sales_return_id?: string | null
           security_guard?: string | null
           status?: string
           type?: string
@@ -2531,6 +2534,7 @@ export type Database = {
       }
       sales_invoices: {
         Row: {
+          amount_paid: number
           bill_to_address: string | null
           bill_to_gst: string | null
           bill_to_name: string | null
@@ -2545,6 +2549,7 @@ export type Database = {
           invoice_type: string
           notes: string | null
           other_charges: number
+          payment_status: string
           period_from: string | null
           period_to: string | null
           status: string
@@ -2555,6 +2560,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          amount_paid?: number
           bill_to_address?: string | null
           bill_to_gst?: string | null
           bill_to_name?: string | null
@@ -2569,6 +2575,7 @@ export type Database = {
           invoice_type?: string
           notes?: string | null
           other_charges?: number
+          payment_status?: string
           period_from?: string | null
           period_to?: string | null
           status?: string
@@ -2579,6 +2586,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          amount_paid?: number
           bill_to_address?: string | null
           bill_to_gst?: string | null
           bill_to_name?: string | null
@@ -2593,6 +2601,7 @@ export type Database = {
           invoice_type?: string
           notes?: string | null
           other_charges?: number
+          payment_status?: string
           period_from?: string | null
           period_to?: string | null
           status?: string
@@ -2740,6 +2749,213 @@ export type Database = {
             columns: ["quotation_id"]
             isOneToOne: false
             referencedRelation: "quotations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_return_allocations: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string
+          sales_return_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          sales_return_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          sales_return_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_return_allocations_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "sales_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_return_allocations_sales_return_id_fkey"
+            columns: ["sales_return_id"]
+            isOneToOne: false
+            referencedRelation: "sales_returns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_return_items: {
+        Row: {
+          created_at: string
+          dispatch_item_id: string | null
+          disposition: string
+          id: string
+          line_total: number
+          product_id: string
+          quantity: number
+          rate: number
+          remarks: string | null
+          sales_return_id: string
+          sort_order: number
+          weight_kg: number | null
+        }
+        Insert: {
+          created_at?: string
+          dispatch_item_id?: string | null
+          disposition?: string
+          id?: string
+          line_total?: never
+          product_id: string
+          quantity: number
+          rate?: number
+          remarks?: string | null
+          sales_return_id: string
+          sort_order?: number
+          weight_kg?: number | null
+        }
+        Update: {
+          created_at?: string
+          dispatch_item_id?: string | null
+          disposition?: string
+          id?: string
+          line_total?: never
+          product_id?: string
+          quantity?: number
+          rate?: number
+          remarks?: string | null
+          sales_return_id?: string
+          sort_order?: number
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_return_items_dispatch_item_id_fkey"
+            columns: ["dispatch_item_id"]
+            isOneToOne: false
+            referencedRelation: "dispatch_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_return_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_return_items_sales_return_id_fkey"
+            columns: ["sales_return_id"]
+            isOneToOne: false
+            referencedRelation: "sales_returns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_returns: {
+        Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          credit_note_number: string | null
+          driver_name: string | null
+          gate_movement_id: string | null
+          gate_pass_number: string | null
+          gl_voucher_id: string | null
+          id: string
+          notes: string | null
+          posted_at: string | null
+          posted_by: string | null
+          reason: string
+          received_by: string | null
+          reference: string | null
+          return_date: string
+          return_number: string
+          returned_by: string | null
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_percent: number
+          total_amount: number
+          updated_at: string
+          vehicle_number: string | null
+        }
+        Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          credit_note_number?: string | null
+          driver_name?: string | null
+          gate_movement_id?: string | null
+          gate_pass_number?: string | null
+          gl_voucher_id?: string | null
+          id?: string
+          notes?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          reason?: string
+          received_by?: string | null
+          reference?: string | null
+          return_date?: string
+          return_number?: string
+          returned_by?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_percent?: number
+          total_amount?: number
+          updated_at?: string
+          vehicle_number?: string | null
+        }
+        Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          credit_note_number?: string | null
+          driver_name?: string | null
+          gate_movement_id?: string | null
+          gate_pass_number?: string | null
+          gl_voucher_id?: string | null
+          id?: string
+          notes?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          reason?: string
+          received_by?: string | null
+          reference?: string | null
+          return_date?: string
+          return_number?: string
+          returned_by?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_percent?: number
+          total_amount?: number
+          updated_at?: string
+          vehicle_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_returns_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
         ]
@@ -3410,6 +3626,49 @@ export type Database = {
     }
     Functions: {
       can_edit_invoice: { Args: { _invoice_id: string }; Returns: boolean }
+      can_manage_sales_returns: { Args: { _user_id: string }; Returns: boolean }
+      can_view_customer_ledger: { Args: { _user_id: string }; Returns: boolean }
+      cancel_sales_return: {
+        Args: { p_id: string; p_reason?: string | null }
+        Returns: undefined
+      }
+      client_account_statement: {
+        Args: { p_client_id: string; p_from?: string | null; p_to?: string | null }
+        Returns: {
+          credit: number
+          debit: number
+          description: string
+          doc_id: string
+          doc_number: string
+          doc_type: string
+          entry_date: string
+          sort_ts: string | null
+        }[]
+      }
+      client_product_ledger: {
+        Args: { p_client_id: string; p_from?: string | null; p_to?: string | null }
+        Returns: {
+          credited_value: number
+          dispatch_returned_qty: number
+          dispatched_qty: number
+          dispatched_value: number
+          last_dispatch_date: string | null
+          last_return_date: string | null
+          net_qty: number
+          product_code: string
+          product_id: string
+          product_name: string
+          sales_returned_qty: number
+        }[]
+      }
+      has_accounting_access: { Args: { _user_id: string }; Returns: boolean }
+      post_sales_return: { Args: { p_id: string }; Returns: undefined }
+      post_sales_return_to_gl: { Args: { p_id: string }; Returns: string }
+      recompute_sales_return_totals: { Args: { _id: string }; Returns: undefined }
+      set_sales_return_allocations: {
+        Args: { p_allocations: Json; p_id: string }
+        Returns: undefined
+      }
       generate_material_lot_number: { Args: never; Returns: string }
       get_employee_work_pattern: {
         Args: { _employee_id: string }
