@@ -79,6 +79,10 @@ create table if not exists public.sales_return_allocations (
   sales_return_id uuid not null references public.sales_returns(id) on delete cascade,
   invoice_id uuid not null references public.sales_invoices(id) on delete cascade,
   amount numeric(14,2) not null check (amount > 0),
+  -- Removing an allocation marks it inactive instead of erasing the row,
+  -- so the credit note keeps its full history.
+  is_active boolean not null default true,
+  removed_at timestamptz,
   created_at timestamptz not null default now(),
   unique (sales_return_id, invoice_id)
 );
@@ -357,7 +361,9 @@ begin
            remarks = coalesce(remarks || ' | ', '') || 'Cancelled' || coalesce(': ' || p_reason, '')
      where id = r.gate_movement_id;
 
-    delete from public.sales_return_allocations where sales_return_id = p_id;
+    update public.sales_return_allocations
+       set is_active = false, removed_at = now()
+     where sales_return_id = p_id and is_active;
   end if;
 
   perform set_config('app.sales_return_internal', 'on', true);
@@ -382,7 +388,8 @@ begin
     case when tg_op <> 'DELETE' then new.invoice_id end], null);
 
   update public.sales_invoices si
-     set amount_paid = coalesce((select sum(a.amount) from public.sales_return_allocations a where a.invoice_id = si.id), 0)
+     set amount_paid = coalesce((select sum(a.amount) from public.sales_return_allocations a
+                                  where a.invoice_id = si.id and a.is_active), 0)
    where si.id = any(_ids);
 
   if to_regclass('public.ar_receipt_allocations') is not null then
@@ -428,7 +435,7 @@ begin
   loop
     if a.amount is null or a.amount <= 0 then raise exception 'Allocation amounts must be positive'; end if;
     select coalesce((select sum(amount) from public.sales_return_allocations
-                      where invoice_id = a.invoice_id and sales_return_id = p_id), 0)
+                      where invoice_id = a.invoice_id and sales_return_id = p_id and is_active), 0)
       into v_existing;
     select si.total_amount - si.amount_paid + v_existing into v_outstanding
       from public.sales_invoices si
@@ -444,10 +451,15 @@ begin
     raise exception 'Allocations (%) exceed credit note value (%)', v_total, r.total_amount;
   end if;
 
-  delete from public.sales_return_allocations where sales_return_id = p_id;
-  insert into public.sales_return_allocations (sales_return_id, invoice_id, amount)
-  select p_id, (x->>'invoice_id')::uuid, (x->>'amount')::numeric
-    from jsonb_array_elements(coalesce(p_allocations, '[]'::jsonb)) as x;
+  update public.sales_return_allocations
+     set is_active = false, removed_at = now()
+   where sales_return_id = p_id and is_active;
+
+  insert into public.sales_return_allocations (sales_return_id, invoice_id, amount, is_active, removed_at)
+  select p_id, (x->>'invoice_id')::uuid, (x->>'amount')::numeric, true, null
+    from jsonb_array_elements(coalesce(p_allocations, '[]'::jsonb)) as x
+  on conflict (sales_return_id, invoice_id)
+  do update set amount = excluded.amount, is_active = true, removed_at = null;
 end $$;
 
 -- ============ GL POSTING (accounting module, when installed) ============

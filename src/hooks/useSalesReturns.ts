@@ -47,6 +47,9 @@ export interface SalesReturnAllocation {
   sales_return_id: string;
   invoice_id: string;
   amount: number;
+  /** false = removed from this credit note (row kept as history). */
+  is_active: boolean;
+  removed_at: string | null;
   sales_invoices?: { invoice_number: string; invoice_number_override: string | null; invoice_date: string; total_amount: number } | null;
 }
 
@@ -164,6 +167,8 @@ export function useSalesReturn(id: string | undefined) {
       if (error) throw error;
       const ret = data as unknown as SalesReturn;
       ret.sales_return_items = [...(ret.sales_return_items || [])].sort((a, b) => a.sort_order - b.sort_order);
+      // Only live allocations count; inactive rows are history.
+      ret.sales_return_allocations = (ret.sales_return_allocations || []).filter((a) => a.is_active);
       return ret;
     },
   });
