@@ -47,7 +47,9 @@ import SalesInvoices from '@/pages/sales/SalesInvoices';
 import SalesInvoiceDetail from '@/pages/sales/SalesInvoiceDetail';
 import ProductMaster from '@/pages/masters/ProductMaster';
 import DispatchPage from '@/pages/inventory/Dispatch';
+import GateIn from '@/pages/inventory/GateIn';
 import GateOut from '@/pages/inventory/GateOut';
+import GateRegister from '@/pages/inventory/GateRegister';
 import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
 
 import '@/i18n';
@@ -123,7 +125,9 @@ const App = () => (
                 <Route path="/inventory/rm-stock" element={<ProtectedRoute><RawMaterialStock /></ProtectedRoute>} />
                 <Route path="/inventory/stock-adjustment-log" element={<ProtectedRoute><StockAdjustmentLog /></ProtectedRoute>} />
                 <Route path="/inventory/dispatch" element={<ProtectedRoute><DispatchPage /></ProtectedRoute>} />
+                <Route path="/inventory/gate-in" element={<ProtectedRoute><GateIn /></ProtectedRoute>} />
                 <Route path="/inventory/gate-out" element={<ProtectedRoute><GateOut /></ProtectedRoute>} />
+                <Route path="/inventory/gate-register" element={<ProtectedRoute><GateRegister /></ProtectedRoute>} />
                 <Route path="/inventory/fg-stock" element={<ProtectedRoute><FinishedGoodsStock /></ProtectedRoute>} />
                 <Route path="/inventory/*" element={<ProtectedRoute><ComingSoon title="Inventory" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
 
