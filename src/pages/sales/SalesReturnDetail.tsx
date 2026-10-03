@@ -10,7 +10,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ArrowLeft, Printer, Pencil, Trash2, CheckCircle2, Ban, Landmark, Receipt, Lock } from 'lucide-react';
 import { format } from 'date-fns';
 import { useReactToPrint } from 'react-to-print';
-import { useAuth } from '@/hooks/useAuth';
 import { formatCurrency } from '@/lib/currency';
 import {
   useSalesReturn,
@@ -18,6 +17,7 @@ import {
   useCancelSalesReturn,
   useDeleteSalesReturn,
   usePostSalesReturnToGl,
+  useSalesReturnPermissions,
   RETURN_REASONS,
   DISPOSITIONS,
 } from '@/hooks/useSalesReturns';
@@ -32,10 +32,7 @@ export default function SalesReturnDetail() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const listPath = pathname.startsWith('/inventory') ? '/inventory/customer-returns' : '/sales/returns';
-  const { hasAnyRole } = useAuth();
-  const canManage = hasAnyRole(['admin', 'sales_manager', 'store_incharge']);
-  const canCancel = hasAnyRole(['admin', 'sales_manager']);
-  const canGl = hasAnyRole(['admin', 'accountant', 'finance_manager']);
+  const { canManage, canCancel, canGl } = useSalesReturnPermissions();
 
   const { data: ret, isLoading } = useSalesReturn(id);
   const post = usePostSalesReturn();
@@ -62,6 +59,7 @@ export default function SalesReturnDetail() {
   const dispLabel = (v: string) => DISPOSITIONS.find((d) => d.value === v)?.label || v;
   const isDraft = ret.status === 'draft';
   const isPosted = ret.status === 'posted';
+  const zeroRateLines = items.filter((i) => Number(i.rate) <= 0).length;
 
   return (
     <MainLayout title={`Return ${ret.return_number}`} subtitle={ret.clients?.name}>
@@ -88,6 +86,11 @@ export default function SalesReturnDetail() {
                           <li>Add the pieces back to FG stock (rework/scrap lines are booked in and rejected out)</li>
                           <li>Issue a credit note of {formatCurrency(Number(ret.total_amount), { compact: false, decimals: 2 })} on the customer's account</li>
                         </ul>
+                        {zeroRateLines > 0 && (
+                          <p className="text-destructive font-medium">
+                            Warning: {zeroRateLines} line(s) have rate 0, so they add nothing to the credit note. Edit the draft first if a credit is due.
+                          </p>
+                        )}
                         <p>Lines cannot be changed afterwards.</p>
                       </div>
                     </AlertDialogDescription>

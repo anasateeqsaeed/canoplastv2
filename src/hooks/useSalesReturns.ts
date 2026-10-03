@@ -1,6 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
+import { useMyPermissions } from '@/hooks/useMyPermissions';
+
+/**
+ * Who may do what with customer returns. Mirrors the database checks
+ * (can_manage_sales_returns / can_cancel_sales_returns / has_accounting_access),
+ * which follow the Role Management permission matrix.
+ */
+export function useSalesReturnPermissions() {
+  const { hasAnyRole } = useAuth();
+  const { can } = useMyPermissions();
+  return {
+    canManage:
+      hasAnyRole(['admin', 'sales_manager', 'store_incharge']) || can('sales', 'create') || can('inventory', 'create'),
+    canCancel: hasAnyRole(['admin', 'sales_manager']) || can('sales', 'delete') || can('inventory', 'delete'),
+    canGl: hasAnyRole(['admin', 'accountant', 'finance_manager']),
+  };
+}
 
 // Customer-level material return + credit note.
 // A return is NOT tied to one dispatch: the customer accumulates rejected /
@@ -372,15 +390,18 @@ export function useClientOpenInvoices(clientId: string | undefined) {
  * dispatch rate agreed with that customer, else the product's list price.
  */
 export async function fetchReturnRate(clientId: string, productId: string, onDate: string): Promise<{ rate: number; source: string }> {
+  // Newest first is decided here rather than by an embedded-column order,
+  // so the lookup works on every PostgREST version.
   const { data: di } = await supabase
     .from('dispatch_items')
     .select('agreed_selling_price, dispatches!inner(client_id, dispatch_date)')
     .eq('product_id', productId)
     .eq('dispatches.client_id', clientId)
-    .not('agreed_selling_price', 'is', null)
-    .order('dispatches(dispatch_date)', { ascending: false })
-    .limit(1);
-  const last = (di || [])[0] as { agreed_selling_price: number | null } | undefined;
+    .gt('agreed_selling_price', 0);
+  const rows = (di || []) as unknown as { agreed_selling_price: number; dispatches: { dispatch_date: string } | null }[];
+  const last = [...rows].sort((a, b) =>
+    (b.dispatches?.dispatch_date || '').localeCompare(a.dispatches?.dispatch_date || ''),
+  )[0];
   if (last && last.agreed_selling_price != null) {
     return { rate: Number(last.agreed_selling_price), source: 'last dispatch' };
   }

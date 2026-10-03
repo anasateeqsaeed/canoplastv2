@@ -11,9 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Plus, Package, Wallet } from 'lucide-react';
 import { format } from 'date-fns';
 import { ClientSelector } from '@/components/selectors/ClientSelector';
-import { useAuth } from '@/hooks/useAuth';
 import { formatCurrency } from '@/lib/currency';
-import { useClientProductLedger, useClientAccountStatement } from '@/hooks/useSalesReturns';
+import { useClientProductLedger, useClientAccountStatement, useSalesReturnPermissions } from '@/hooks/useSalesReturns';
 import { SalesReturnDialog } from '@/components/sales/SalesReturnDialog';
 
 const docLabel: Record<string, string> = { invoice: 'Invoice', credit_note: 'Credit Note', receipt: 'Receipt' };
@@ -21,8 +20,7 @@ const docLabel: Record<string, string> = { invoice: 'Invoice', credit_note: 'Cre
 export default function CustomerLedgerPage() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const { hasAnyRole } = useAuth();
-  const canManage = hasAnyRole(['admin', 'sales_manager', 'store_incharge']);
+  const { canManage } = useSalesReturnPermissions();
 
   const clientId = params.get('client') || '';
   const [from, setFrom] = useState('');

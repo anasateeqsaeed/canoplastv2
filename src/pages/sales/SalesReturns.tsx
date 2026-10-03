@@ -10,9 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Plus, Eye, Undo2, BookOpen } from 'lucide-react';
 import { format } from 'date-fns';
 import { useClients } from '@/hooks/useClients';
-import { useAuth } from '@/hooks/useAuth';
 import { formatCurrency } from '@/lib/currency';
-import { useSalesReturns, RETURN_REASONS } from '@/hooks/useSalesReturns';
+import { useSalesReturns, useSalesReturnPermissions, RETURN_REASONS } from '@/hooks/useSalesReturns';
 import { SalesReturnDialog } from '@/components/sales/SalesReturnDialog';
 
 const statusVariant = (s: string): 'default' | 'destructive' | 'secondary' =>
@@ -24,8 +23,7 @@ export default function SalesReturnsPage() {
   // Same screen is mounted under /sales and /inventory so store users reach it
   // through their own module; keep detail links inside the module we came from.
   const base = pathname.startsWith('/inventory') ? '/inventory/customer-returns' : '/sales/returns';
-  const { hasAnyRole } = useAuth();
-  const canManage = hasAnyRole(['admin', 'sales_manager', 'store_incharge']);
+  const { canManage } = useSalesReturnPermissions();
   const [status, setStatus] = useState('all');
   const [clientId, setClientId] = useState('all');
   const [startDate, setStartDate] = useState(format(new Date(Date.now() - 90 * 86400_000), 'yyyy-MM-dd'));

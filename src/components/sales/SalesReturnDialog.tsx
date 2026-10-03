@@ -331,6 +331,9 @@ export function SalesReturnDialog({ open, onOpenChange, existing, defaultClientI
               <div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(totals.sub, { compact: false, decimals: 2 })}</span></div>
               <div className="flex justify-between"><span>Tax {taxPercent}%</span><span>{formatCurrency(totals.tax, { compact: false, decimals: 2 })}</span></div>
               <div className="flex justify-between border-t pt-1 font-semibold text-base"><span>Credit note value</span><span>{formatCurrency(totals.total, { compact: false, decimals: 2 })}</span></div>
+              {validLines.some((l) => !(Number(l.rate) > 0)) && (
+                <div className="text-xs text-destructive pt-1">Some lines have rate 0 and add no credit.</div>
+              )}
             </div>
           </div>
         </div>
