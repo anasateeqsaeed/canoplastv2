@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, CircleDashed, Loader2, OctagonAlert, CircleHelp, ChevronRight, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { LayoutGrid, Check, CircleDashed, Loader2, OctagonAlert, CircleHelp, ChevronRight, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { fmtDate } from '@/lib/dates';
 import {
@@ -199,10 +200,13 @@ export function ReadinessChecklist({
   orderId,
   items,
   summary,
+  onOpenLine,
 }: {
   orderId: string;
   items: Array<{ id: string; product_id?: string | null; products?: { code?: string; name?: string } | null }>;
   summary: OrderReadinessSummary | undefined;
+  /** Opens the Status Boxes for a line. */
+  onOpenLine?: (lineId: string) => void;
 }) {
   const { data: orderSteps = [], isLoading: l1 } = useReadinessSteps(orderId);
   const { data: closureSteps = [], isLoading: l2 } = useClosureSteps(orderId);
@@ -233,6 +237,11 @@ export function ReadinessChecklist({
                 <CardTitle className="text-base">
                   {item?.products?.code ? `${item.products.code} · ` : ''}{item?.products?.name ?? os[0]?.product_name ?? 'Line'}
                 </CardTitle>
+                {onOpenLine && (
+                  <Button type="button" size="sm" variant="outline" className="h-7" onClick={() => onOpenLine(lineId)}>
+                    <LayoutGrid size={13} className="mr-1" /> Status boxes <span dir="rtl" lang="ur" className="ml-1 text-muted-foreground">صورتحال</span>
+                  </Button>
+                )}
                 {line && Number(line.closure_blocked ?? 0) > 0 && (
                   <Badge variant="destructive">{line.closure_blocked} blocked <span dir="rtl" lang="ur" className="ml-1">رکاوٹ</span></Badge>
                 )}

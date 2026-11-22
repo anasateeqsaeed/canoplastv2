@@ -52,6 +52,8 @@ import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
 import DeliveryConfirmationPage from '@/pages/inventory/DeliveryConfirmation';
 import ReadinessWeights from '@/pages/settings/ReadinessWeights';
 import BomCheck from '@/pages/masters/BomCheck';
+import MachineAvailability from '@/pages/production/MachineAvailability';
+import MoldAvailability from '@/pages/production/MoldAvailability';
 
 import '@/i18n';
 
@@ -131,6 +133,10 @@ const App = () => (
                 <Route path="/inventory/gate-out" element={<ProtectedRoute><GateOut /></ProtectedRoute>} />
                 <Route path="/inventory/fg-stock" element={<ProtectedRoute><FinishedGoodsStock /></ProtectedRoute>} />
                 <Route path="/inventory/*" element={<ProtectedRoute><ComingSoon title="Inventory" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
+
+                {/* Production (availability views ahead of the Phase 5 module) */}
+                <Route path="/production/machines" element={<ProtectedRoute><MachineAvailability /></ProtectedRoute>} />
+                <Route path="/production/molds" element={<ProtectedRoute><MoldAvailability /></ProtectedRoute>} />
 
                 <Route path="/settings" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="General settings" /></ProtectedRoute>} />
                 <Route path="/settings/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />

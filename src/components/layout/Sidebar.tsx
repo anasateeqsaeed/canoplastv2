@@ -134,6 +134,8 @@ const navItems: NavItem[] = [
       { label: 'Overview', path: '/production' },
       { label: 'Job Cards', path: '/production/jobs' },
       { label: 'Hourly Entry', path: '/production/hourly-entry' },
+      { label: 'Machine Availability', path: '/production/machines' },
+      { label: 'Mold Availability', path: '/production/molds' },
     ],
   },
   {

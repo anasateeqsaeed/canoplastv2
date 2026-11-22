@@ -256,7 +256,7 @@ export interface ReadinessWeight {
   label_ur: string | null;
   weight: number;
   is_active: boolean;
-  phase: 'order' | 'closure' | 'phase';
+  phase: 'order' | 'closure' | 'phase' | 'setting';
   note: string | null;
   updated_at: string;
 }

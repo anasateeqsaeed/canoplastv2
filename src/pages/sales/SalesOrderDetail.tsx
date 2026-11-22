@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { LineStatusSheet } from '@/components/sales/LineStatusSheet';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Send, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, Send, CheckCircle2, XCircle, ChevronRight } from 'lucide-react';
 import { useSalesOrder, useUpdateSalesOrderStatus } from '@/hooks/useSales';
 import { formatCurrency } from '@/lib/currency';
 import { fmtDate } from '@/lib/dates';
@@ -26,6 +28,7 @@ export default function SalesOrderDetail() {
   const updateStatus = useUpdateSalesOrderStatus();
   const { data: readiness = {} } = useOrderReadinessMap(id ? [id] : []);
   useReadinessRealtime(!!id);
+  const [boxLineId, setBoxLineId] = useState<string | null>(null);
 
   if (isLoading || !so) {
     return <MainLayout title="Sales Order"><div className="p-8 text-center text-muted-foreground">Loading…</div></MainLayout>;
@@ -85,7 +88,7 @@ export default function SalesOrderDetail() {
           </CardContent>
         </Card>
 
-        <ReadinessChecklist orderId={so.id} items={(so.sales_order_items || []) as any[]} summary={readiness[so.id]} />
+        <ReadinessChecklist orderId={so.id} items={(so.sales_order_items || []) as any[]} summary={readiness[so.id]} onOpenLine={setBoxLineId} />
 
         <Card>
           <CardHeader><CardTitle>Order Lines</CardTitle></CardHeader>
@@ -105,10 +108,11 @@ export default function SalesOrderDetail() {
                 </TableHeader>
                 <TableBody>
                   {(so.sales_order_items || []).map((it: any) => (
-                    <TableRow key={it.id}>
+                    <TableRow key={it.id} className="cursor-pointer hover:bg-muted/40" onClick={() => setBoxLineId(it.id)} title="Open status boxes">
                       <TableCell>
                         <div className="font-medium">{it.products?.code}</div>
                         <div className="text-xs text-muted-foreground">{it.products?.name}</div>
+                        <div className="text-[11px] text-primary inline-flex items-center">Status boxes <ChevronRight size={11} /></div>
                       </TableCell>
                       <TableCell className="text-right">{Number(it.ordered_qty).toLocaleString()}</TableCell>
                       <TableCell className="text-right">
@@ -136,6 +140,17 @@ export default function SalesOrderDetail() {
           <Card><CardHeader><CardTitle>Notes</CardTitle></CardHeader><CardContent className="whitespace-pre-wrap text-sm">{so.notes}</CardContent></Card>
         )}
       </div>
+      {(() => {
+        const it = (so.sales_order_items || []).find((x: any) => x.id === boxLineId) as any;
+        return (
+          <LineStatusSheet
+            soiId={boxLineId}
+            onOpenChange={(o) => { if (!o) setBoxLineId(null); }}
+            title={it ? `${so.so_number} · ${it.products?.code ?? it.products?.name ?? 'Line'}` : so.so_number}
+            subtitle={it ? `${it.products?.name ?? ''} · ${Number(it.ordered_qty).toLocaleString('en-US')} pcs · ${so.clients?.name ?? ''}` : undefined}
+          />
+        );
+      })()}
     </MainLayout>
   );
 }

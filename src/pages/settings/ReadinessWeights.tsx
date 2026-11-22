@@ -36,7 +36,9 @@ export default function ReadinessWeights() {
     () => rows.filter((r) => draft[r.step_key] && (Number(draft[r.step_key].weight) !== r.weight || draft[r.step_key].is_active !== r.is_active)),
     [rows, draft],
   );
-  const invalid = Object.values(draft).some((d) => d.weight === '' || Number.isNaN(Number(d.weight)) || Number(d.weight) < 0);
+  const invalid =
+    Object.values(draft).some((d) => d.weight === '' || Number.isNaN(Number(d.weight)) || Number(d.weight) < 0) ||
+    (draft.hours_per_day != null && (Number(draft.hours_per_day.weight) <= 0 || Number(draft.hours_per_day.weight) > 24));
 
   const onSave = () => {
     save.mutate(dirty.map((r) => ({ step_key: r.step_key, weight: Number(draft[r.step_key].weight), is_active: draft[r.step_key].is_active })));
@@ -146,6 +148,50 @@ export default function ReadinessWeights() {
               </Card>
             );
           })
+        )}
+
+        {/* Settings rows (phase = 'setting'), e.g. hours_per_day used for every ETA */}
+        {rows.filter((r) => r.phase === 'setting').length > 0 && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">
+                Planning settings <span dir="rtl" lang="ur" className="font-normal text-muted-foreground">منصوبہ بندی کی ترتیبات</span>
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">Used for every production ETA (machine, mold and order line status boxes).</p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {rows.filter((r) => r.phase === 'setting').map((r) => {
+                const d = draft[r.step_key] ?? { weight: String(r.weight), is_active: r.is_active };
+                const isHours = r.step_key === 'hours_per_day';
+                const bad = isHours && (Number(d.weight) <= 0 || Number(d.weight) > 24);
+                return (
+                  <div key={r.step_key} className="flex flex-wrap items-center gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium">{r.label}</div>
+                      {r.label_ur && <div dir="rtl" lang="ur" className="text-sm text-muted-foreground text-left">{r.label_ur}</div>}
+                      {r.note && <div className="text-xs text-muted-foreground">{r.note}</div>}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        min={1}
+                        max={isHours ? 24 : undefined}
+                        step="0.5"
+                        inputMode="decimal"
+                        className={cn('h-9 w-24 text-right', bad && 'border-red-500')}
+                        value={d.weight}
+                        disabled={!canEdit}
+                        onChange={(e) => setDraft((p) => ({ ...p, [r.step_key]: { ...d, weight: e.target.value } }))}
+                      />
+                      {isHours && <span className="text-sm text-muted-foreground">h / day</span>}
+                    </div>
+                    {bad && <p className="w-full text-xs text-red-600">Hours per day must be between 1 and 24.</p>}
+                    <p className="w-full text-[11px] text-muted-foreground">Updated {fmtDate(r.updated_at)}</p>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
         )}
       </div>
     </MainLayout>

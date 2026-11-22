@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -114,6 +114,33 @@ export default function PurchaseOrders() {
     tolerance_percent: 5,
     allow_extra_receipt: true,
   });
+
+  // Prefill from a shortfall elsewhere (e.g. order Status Boxes → "Create PO"):
+  // /purchase/orders?new=1&material=<id>&qty=<n>&note=<text>
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('new') !== '1' || isViewOnly) return;
+    if (searchParams.get('material') && !materials.length) return; // wait for materials
+    const materialId = searchParams.get('material') || '';
+    const qty = Math.ceil((Number(searchParams.get('qty')) || 0) * 1000) / 1000;
+    const note = searchParams.get('note') || '';
+    const mat = materials.find((m) => m.id === materialId) as any;
+    const deniesExtra = mat?.deny_extra_tolerance || false;
+    setNewItem((prev) => ({
+      ...prev,
+      material_id: mat ? materialId : '',
+      ordered_qty: qty > 0 ? qty : 0,
+      remarks: note || prev.remarks,
+      allow_extra_receipt: deniesExtra ? false : prev.allow_extra_receipt,
+      tolerance_percent: deniesExtra ? 0 : prev.tolerance_percent,
+    }));
+    if (note) setFormData((prev) => ({ ...prev, remarks: prev.remarks || note }));
+    setIsDialogOpen(true);
+    const next = new URLSearchParams(searchParams);
+    ['new', 'material', 'qty', 'note'].forEach((k) => next.delete(k));
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, materials.length]);
 
   // Get allowed tolerance options from settings
   const allowedTolerances = toleranceSettings?.allowedTolerances || [0, 5, 10, 15, 20];
