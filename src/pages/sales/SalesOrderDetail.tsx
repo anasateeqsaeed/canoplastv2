@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft, Send, CheckCircle2, XCircle } from 'lucide-react';
-import { format } from 'date-fns';
 import { useSalesOrder, useUpdateSalesOrderStatus } from '@/hooks/useSales';
 import { formatCurrency } from '@/lib/currency';
+import { fmtDate } from '@/lib/dates';
+import { useOrderReadinessMap, useReadinessRealtime } from '@/hooks/useOrderReadiness';
+import { OrderProgressNumbers } from '@/components/sales/OrderProgressNumbers';
+import { ReadinessChecklist } from '@/components/sales/ReadinessChecklist';
 
 // ReleaseToProductionDialog + linked production_jobs reconnect in Phase 5
 
@@ -21,6 +24,8 @@ export default function SalesOrderDetail() {
   const navigate = useNavigate();
   const { data: so, isLoading } = useSalesOrder(id);
   const updateStatus = useUpdateSalesOrderStatus();
+  const { data: readiness = {} } = useOrderReadinessMap(id ? [id] : []);
+  useReadinessRealtime(!!id);
 
   if (isLoading || !so) {
     return <MainLayout title="Sales Order"><div className="p-8 text-center text-muted-foreground">Loading…</div></MainLayout>;
@@ -64,11 +69,23 @@ export default function SalesOrderDetail() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Order Date</div><div className="text-lg font-semibold">{format(new Date(so.order_date), 'dd MMM yyyy')}</div></CardContent></Card>
-          <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Required Date</div><div className="text-lg font-semibold">{so.required_date ? format(new Date(so.required_date), 'dd MMM yyyy') : '—'}</div></CardContent></Card>
+          <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Order Date</div><div className="text-lg font-semibold">{fmtDate(so.order_date)}</div></CardContent></Card>
+          <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Required Date</div><div className="text-lg font-semibold">{fmtDate(so.required_date)}</div></CardContent></Card>
           <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Customer PO</div><div className="text-lg font-semibold">{so.customer_po_number || '—'}</div></CardContent></Card>
           <Card><CardContent className="p-4"><div className="text-xs text-muted-foreground">Total</div><div className="text-lg font-semibold text-primary">{formatCurrency(Number(so.total_amount), { compact: false })}</div></CardContent></Card>
         </div>
+
+        <Card>
+          <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="font-semibold">Order readiness <span dir="rtl" lang="ur" className="font-normal text-muted-foreground">آرڈر کی تیاری</span></div>
+              <div className="text-xs text-muted-foreground">Status: {so.status.replace('_', ' ')}</div>
+            </div>
+            <OrderProgressNumbers summary={readiness[so.id]} status={so.status} />
+          </CardContent>
+        </Card>
+
+        <ReadinessChecklist orderId={so.id} items={(so.sales_order_items || []) as any[]} summary={readiness[so.id]} />
 
         <Card>
           <CardHeader><CardTitle>Order Lines</CardTitle></CardHeader>

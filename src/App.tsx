@@ -49,6 +49,8 @@ import ProductMaster from '@/pages/masters/ProductMaster';
 import DispatchPage from '@/pages/inventory/Dispatch';
 import GateOut from '@/pages/inventory/GateOut';
 import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
+import DeliveryConfirmationPage from '@/pages/inventory/DeliveryConfirmation';
+import ReadinessWeights from '@/pages/settings/ReadinessWeights';
 
 import '@/i18n';
 
@@ -123,6 +125,7 @@ const App = () => (
                 <Route path="/inventory/rm-stock" element={<ProtectedRoute><RawMaterialStock /></ProtectedRoute>} />
                 <Route path="/inventory/stock-adjustment-log" element={<ProtectedRoute><StockAdjustmentLog /></ProtectedRoute>} />
                 <Route path="/inventory/dispatch" element={<ProtectedRoute><DispatchPage /></ProtectedRoute>} />
+                <Route path="/inventory/dispatch/:id/confirm" element={<ProtectedRoute><DeliveryConfirmationPage /></ProtectedRoute>} />
                 <Route path="/inventory/gate-out" element={<ProtectedRoute><GateOut /></ProtectedRoute>} />
                 <Route path="/inventory/fg-stock" element={<ProtectedRoute><FinishedGoodsStock /></ProtectedRoute>} />
                 <Route path="/inventory/*" element={<ProtectedRoute><ComingSoon title="Inventory" subtitle="Coming in Phase 3/5" /></ProtectedRoute>} />
@@ -131,6 +134,7 @@ const App = () => (
                 <Route path="/settings/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
                 <Route path="/settings/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
                 <Route path="/settings/employee-types" element={<ProtectedRoute><EmployeeTypes /></ProtectedRoute>} />
+                <Route path="/settings/readiness-weights" element={<ProtectedRoute><ReadinessWeights /></ProtectedRoute>} />
                 <Route path="/settings/*" element={<ProtectedRoute><ComingSoon title="Settings" subtitle="Coming in a later phase" /></ProtectedRoute>} />
 
                 <Route path="/hr" element={<ProtectedRoute><HRDashboard /></ProtectedRoute>} />

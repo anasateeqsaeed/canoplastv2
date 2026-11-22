@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Printer, Truck, Eye, CheckCircle, Trash2, RotateCcw, Pencil, Users, X, Check, Search, Calendar as CalendarIcon, Package } from 'lucide-react';
+import { Plus, Printer, Truck, Eye, CheckCircle, Trash2, RotateCcw, Pencil, Users, X, Check, Search, Calendar as CalendarIcon, Package, ClipboardSignature } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { DeliveryStatusIcons } from '@/components/delivery/DeliveryStatusIcons';
+import { useDeliveryConfirmationsMap } from '@/hooks/useDeliveryConfirmations';
+import { useRealtimeInvalidate } from '@/hooks/useRealtimeInvalidate';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { useDispatches, useDispatchItems, useUpdateDispatchStatus, useDeleteDispatch } from '@/hooks/useDispatches';
@@ -43,6 +47,14 @@ export default function DispatchPage() {
   const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const { data: dispatches = [], isLoading } = useDispatches(statusFilter);
+  const navigate = useNavigate();
+  const shippedIds = useMemo(
+    () => (dispatches as any[]).filter((d) => d.status === 'dispatched' || d.status === 'delivered').map((d) => d.id as string),
+    [dispatches],
+  );
+  const { data: confirmations = {} } = useDeliveryConfirmationsMap(shippedIds);
+  useRealtimeInvalidate(['dispatch_delivery_confirmations', 'dispatches'], [['delivery-confirmations'], ['dispatches']]);
+  const openConfirm = (id: string) => navigate(`/inventory/dispatch/${id}/confirm`);
   const dispatchCreatorIds = useMemo(
     () => Array.from(new Set((dispatches as any[]).map((d) => d.created_by).filter(Boolean))) as string[],
     [dispatches],
@@ -496,6 +508,7 @@ export default function DispatchPage() {
                   <TableHead className="text-right">Cartons</TableHead>
                   <TableHead className="text-right">Weight KG</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead title="Received / QC / Bilty / Issue">Delivery <span dir="rtl" lang="ur" className="text-muted-foreground font-normal">وصولی</span></TableHead>
                   <TableHead>Created By</TableHead>
                   <TableHead className="text-right sticky right-0 bg-card z-10 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.15)]">Actions</TableHead>
                 </TableRow>
@@ -505,13 +518,20 @@ export default function DispatchPage() {
                   <TableRow key={d.id}>
                     <TableCell className="font-mono text-xs">{d.dispatch_number}</TableCell>
                     <TableCell className="font-mono text-xs">{d.gate_pass_number}</TableCell>
-                    <TableCell>{format(new Date(d.dispatch_date), 'dd/MM/yy')}</TableCell>
+                    <TableCell>{format(new Date(d.dispatch_date), 'dd/MM/yyyy')}</TableCell>
                     <TableCell className="font-medium">{d.clients?.name}{d.is_third_party && <Badge variant="outline" className="ml-1 text-[10px] px-1 py-0">3rd Party</Badge>}</TableCell>
                     <TableCell>{d.vehicle_number || '—'}</TableCell>
                     <TableCell className="text-right">{d.total_pieces}</TableCell>
                     <TableCell className="text-right">{d.total_cartons}</TableCell>
                     <TableCell className="text-right">{d.total_weight_kg.toFixed(3)}</TableCell>
                     <TableCell><Badge variant={statusColor(d.status) as any}>{d.status}</Badge></TableCell>
+                    <TableCell>
+                      {d.status === 'dispatched' || d.status === 'delivered' ? (
+                        <button type="button" onClick={() => openConfirm(d.id)} className="p-1 -m-1 rounded hover:bg-muted" title="Confirm delivery">
+                          <DeliveryStatusIcons c={confirmations[d.id]} />
+                        </button>
+                      ) : <span className="text-xs text-muted-foreground">—</span>}
+                    </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       <div className="flex flex-col leading-tight">
                         <span className="truncate max-w-[140px]" title={(d as any).created_by ? (dispatchUserNames[(d as any).created_by] || '') : ''}>
@@ -581,6 +601,15 @@ export default function DispatchPage() {
                             )}
                             {(d.status === 'dispatched' || d.status === 'delivered') && (
                               <>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-emerald-600 hover:text-emerald-700"
+                                  title="Confirm delivery / ڈلیوری کی تصدیق"
+                                  onClick={() => openConfirm(d.id)}
+                                >
+                                  <ClipboardSignature size={14} />
+                                </Button>
                                 {d.status === 'dispatched' && (
                                   <PermGate module="inventory" action="edit">
                                     <Button variant="ghost" size="icon" onClick={() => updateStatus.mutate({ id: d.id, status: 'delivered' })}><CheckCircle size={14} /></Button>
@@ -600,7 +629,7 @@ export default function DispatchPage() {
                   </TableRow>
                 ))}
                 {!isLoading && filteredDispatches.length === 0 && (
-                  <TableRow><TableCell colSpan={11} className="text-center text-muted-foreground">
+                  <TableRow><TableCell colSpan={12} className="text-center text-muted-foreground">
                     {hasAnyFilter ? 'No dispatches match the current filters' : 'No dispatches found'}
                   </TableCell></TableRow>
                 )}
@@ -685,6 +714,21 @@ export default function DispatchPage() {
                   <div><span className="text-muted-foreground">Vehicle:</span><p className="font-medium">{viewDispatch.vehicle_number || '—'}</p></div>
                   <div><span className="text-muted-foreground">Driver:</span><p className="font-medium">{viewDispatch.driver_name || '—'}</p></div>
                 </div>
+                {(viewDispatch.status === 'dispatched' || viewDispatch.status === 'delivered') && (
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-3">
+                    <div className="flex items-center gap-3 text-sm">
+                      <span className="text-muted-foreground">Delivery <span dir="rtl" lang="ur">وصولی</span>:</span>
+                      <DeliveryStatusIcons c={confirmations[viewDispatch.id]} size={18} />
+                      {confirmations[viewDispatch.id]?.issue_status === 'open' && (
+                        <span className="text-xs text-red-600 max-w-xs truncate">{confirmations[viewDispatch.id]?.issue_notes}</span>
+                      )}
+                    </div>
+                    <Button size="sm" onClick={() => openConfirm(viewDispatch.id)}>
+                      <ClipboardSignature size={14} className="mr-1" /> Confirm delivery
+                      <span dir="rtl" lang="ur" className="ml-2">تصدیق</span>
+                    </Button>
+                  </div>
+                )}
                 <div className="overflow-x-scroll [scrollbar-width:thin] [&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-thumb]:bg-muted-foreground/40 [&::-webkit-scrollbar-thumb]:rounded">
                 <Table>
                   <TableHeader>

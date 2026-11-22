@@ -42,3 +42,11 @@ Full spec was drafted; short version:
 - `src/integrations/supabase/types.ts` is generated — regenerate after any schema change
 - Not-yet-built table references are stripped with `// Reconnects in Phase N` comments — grep for `Reconnects in Phase` to find them
 - Doc numbers via `next_doc_number(doc_type, prefix)`; RLS via `has_role(auth.uid(), '<role>')`
+
+## Order Readiness + Closure (frontend)
+- Sales order detail: per-line stepper — Order steps 1–7 (`v_so_readiness_steps`) + Closure 8–12 (`v_so_closure_steps`), each step links to where it gets fixed
+- Order list/detail: Order % · Closure % · Total % (`v_so_readiness`), red "blocked" badge, green "Ready to close" → `sales_orders.status='closed'`
+- Delivery Confirmation (mobile-first) at `/inventory/dispatch/:id/confirm` → upserts `dispatch_delivery_confirmations`; DC list shows Received/QC/Bilty/Issue icons
+- Settings → Readiness Weights (`so_readiness_weights` grouped by phase, warns when a phase ≠ 100)
+- Dashboard tile "Closure pending"
+- **Pending DB step** (not applied): `supabase/pending/delivery_closure_storage_realtime.sql` — `delivery-proofs` storage bucket for POD/bilty photos + adds `sales_invoices`, `dispatch_delivery_confirmations` etc. to the realtime publication

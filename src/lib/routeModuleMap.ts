@@ -11,6 +11,8 @@ export function pathToModule(pathname: string): ModuleId | null {
 
   if (p === '/auth' || p.startsWith('/auth/')) return null;
   if (p.startsWith('/operator')) return null;
+  // Delivery confirmation: any logged-in user (driver / dispatch person) may fill it — matches the table's RLS.
+  if (/^\/inventory\/dispatch\/[^/]+\/confirm\/?$/.test(p)) return null;
 
   if (p === '/' || p.startsWith('/dashboard')) return 'dashboard';
   if (p.startsWith('/masters') || p.startsWith('/tools')) return 'masters';

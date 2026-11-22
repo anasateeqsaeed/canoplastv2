@@ -16,6 +16,9 @@ import {
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/useAuth';
 import { formatCurrency } from '@/lib/currency';
+import { fmtDate } from '@/lib/dates';
+import { useOrderReadinessMap, useReadinessRealtime } from '@/hooks/useOrderReadiness';
+import { OrderProgressNumbers } from '@/components/sales/OrderProgressNumbers';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -46,6 +49,8 @@ export default function SalesOrders() {
   const { data: clients = [] } = useClients();
   const { data: orders = [], isLoading } = useSalesOrders({ status, clientId, startDate, endDate });
   const del = useDeleteSalesOrder();
+  const { data: readiness = {} } = useOrderReadinessMap(orders.map((o) => o.id));
+  useReadinessRealtime();
 
   return (
     <MainLayout title="Sales Orders" subtitle="Confirmed customer orders driving production">
@@ -91,7 +96,7 @@ export default function SalesOrders() {
         <Card>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
-              <Table className="min-w-[1200px]">
+              <Table className="min-w-[1400px]">
                 <TableHeader>
                   <TableRow>
                     <TableHead>SO #</TableHead>
@@ -102,15 +107,16 @@ export default function SalesOrders() {
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead className="w-40">Produced</TableHead>
                     <TableHead className="w-40">Dispatched</TableHead>
+                    <TableHead>Progress <span dir="rtl" lang="ur" className="font-normal text-muted-foreground">پیش رفت</span></TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right w-32">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
-                    <TableRow><TableCell colSpan={10} className="text-center py-6 text-muted-foreground">Loading…</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={11} className="text-center py-6 text-muted-foreground">Loading…</TableCell></TableRow>
                   ) : orders.length === 0 ? (
-                    <TableRow><TableCell colSpan={10} className="text-center py-6 text-muted-foreground">No sales orders</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={11} className="text-center py-6 text-muted-foreground">No sales orders</TableCell></TableRow>
                   ) : orders.map((so) => {
                     const totalOrd = (so.sales_order_items || []).reduce((s, it) => s + Number(it.ordered_qty || 0), 0);
                     const totalProd = (so.sales_order_items || []).reduce((s, it) => s + Number(it.produced_qty || 0), 0);
@@ -118,10 +124,10 @@ export default function SalesOrders() {
                     return (
                       <TableRow key={so.id} className="cursor-pointer hover:bg-muted/40" onClick={() => navigate(`/sales/orders/${so.id}`)}>
                         <TableCell className="font-mono text-sm">{so.so_number}</TableCell>
-                        <TableCell>{format(new Date(so.order_date), 'dd MMM yyyy')}</TableCell>
+                        <TableCell>{fmtDate(so.order_date)}</TableCell>
                         <TableCell>{so.clients?.name}</TableCell>
                         <TableCell className="text-xs">{so.customer_po_number || '—'}</TableCell>
-                        <TableCell>{so.required_date ? format(new Date(so.required_date), 'dd MMM') : '—'}</TableCell>
+                        <TableCell>{fmtDate(so.required_date)}</TableCell>
                         <TableCell className="text-right font-semibold">{formatCurrency(Number(so.total_amount), { compact: false })}</TableCell>
                         <TableCell>
                           <div className="text-xs">{Math.round(totalProd).toLocaleString()} / {Math.round(totalOrd).toLocaleString()} ({pct(totalProd, totalOrd)}%)</div>
@@ -134,6 +140,9 @@ export default function SalesOrders() {
                           <div className="h-1.5 bg-muted rounded mt-1">
                             <div className="h-1.5 bg-green-500 rounded" style={{ width: `${pct(totalDisp, totalOrd)}%` }} />
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <OrderProgressNumbers summary={readiness[so.id]} status={so.status} compact />
                         </TableCell>
                         <TableCell><span className={`px-2 py-0.5 rounded text-xs whitespace-nowrap ${STATUS_COLORS[so.status]}`}>{so.status.replace('_', ' ')}</span></TableCell>
                         <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
