@@ -192,6 +192,7 @@ const navItems: NavItem[] = [
       { label: 'User Management', path: '/settings/users' },
       { label: 'Role Management', path: '/settings/roles' },
       { label: 'Employee Types', path: '/settings/employee-types' },
+      { label: 'Readiness Weights', path: '/settings/readiness-weights' },
     ],
   },
 ];

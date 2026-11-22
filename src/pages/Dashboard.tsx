@@ -1,10 +1,13 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LayoutDashboard } from 'lucide-react';
+import { ClosurePendingTile } from '@/components/dashboard/ClosurePendingTile';
 
 export default function Dashboard() {
   return (
     <MainLayout title="Dashboard" subtitle="Canoplast ERP v2">
+      <div className="space-y-4">
+      <ClosurePendingTile />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -20,6 +23,7 @@ export default function Dashboard() {
           </p>
         </CardContent>
       </Card>
+      </div>
     </MainLayout>
   );
 }
