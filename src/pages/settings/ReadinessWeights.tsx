@@ -13,8 +13,8 @@ import { fmtDate } from '@/lib/dates';
 import { cn } from '@/lib/utils';
 
 const PHASES: Array<{ key: ReadinessWeight['phase']; en: string; ur: string; hint: string }> = [
-  { key: 'order', en: 'Order', ur: 'آرڈر', hint: 'Steps 1–7: mold → dispatch. Active weights should add up to 100.' },
-  { key: 'closure', en: 'Closure', ur: 'وصولی', hint: 'Steps 8–12: invoice → payment. Active weights should add up to 100.' },
+  { key: 'order', en: 'Order', ur: 'آرڈر', hint: 'Steps 1–8: mold → dispatch (incl. 5 Fitting parts). Active weights should add up to 100.' },
+  { key: 'closure', en: 'Closure', ur: 'وصولی', hint: 'Steps 9–13: invoice → payment. Active weights should add up to 100.' },
   { key: 'phase', en: 'Phase split', ur: 'حصوں کی تقسیم', hint: 'How the grand Total % is split between Order and Closure. Should add up to 100.' },
 ];
 

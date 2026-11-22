@@ -50,3 +50,10 @@ Full spec was drafted; short version:
 - Settings → Readiness Weights (`so_readiness_weights` grouped by phase, warns when a phase ≠ 100)
 - Dashboard tile "Closure pending"
 - **Pending DB step** (not applied): `supabase/pending/delivery_closure_storage_realtime.sql` — `delivery-proofs` storage bucket for POD/bilty photos + adds `sales_invoices`, `dispatch_delivery_confirmations` etc. to the realtime publication
+
+## BOM v2 (frontend)
+- `product_bom_lines` is the only BOM the UI writes (DB trigger syncs legacy `product_materials`; `product_sets` no longer touched)
+- Product Master → **BOM / Material List** tab: Molding (g/pc or per pc, waste %, grams vs weight ±5%, pigment %), Fitting parts (with each part's BOM status), Packing (per pack / per pc, pack size); 10,000-pc preview; Copy BOM from another product; templates (Injection item, PET bottle, Fitting set)
+- **BOM Check** at `/masters/bom-check` (`v_product_bom_check`, active products) — deep-links to `/masters/products?bom=<id>`
+- BOM status dot on the product list; readiness step 5 "Fitting parts", N/A steps greyed, per-step material/part needs with "via <part>"
+- Pure helpers + tests in `src/lib/bom.ts` (`computeNeed` mirrors `v_product_bom.need_per_piece`)

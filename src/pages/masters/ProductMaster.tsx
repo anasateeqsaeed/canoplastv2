@@ -1,4 +1,9 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { BomEditor, type BomProduct } from '@/components/masters/BomEditor';
+import { useBomStatusMap, BOM_STATUS_META } from '@/hooks/useBom';
+import { useRealtimeInvalidate } from '@/hooks/useRealtimeInvalidate';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { DataTable, Column } from '@/components/masters/DataTable';
 import { StatusBadge } from '@/components/masters/StatusBadge';
@@ -9,7 +14,7 @@ import { ProductLookupInput } from '@/components/masters/ProductLookupInput';
 import { QuickAddMaterialDialog } from '@/components/masters/QuickAddMaterialDialog';
 import { QuickAddClientDialog } from '@/components/masters/QuickAddClientDialog';
 import { ClientSelector } from '@/components/selectors/ClientSelector';
-import { Package, Box, Palette, Loader2, Plus, Layers, IndianRupee, Users, FileSpreadsheet, FileDown, FileUp, History } from 'lucide-react';
+import { Package, Box, Palette, Loader2, Plus, Layers, IndianRupee, Users, FileSpreadsheet, FileDown, FileUp, History, ListTree } from 'lucide-react';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import {
@@ -37,8 +42,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { ProductRateHistoryDialog } from '@/components/masters/ProductRateHistoryDialog';
 import { SearchableComboBox } from '@/components/ui/searchable-combobox';
 
-// Molds, product-material mixes, BOM sets, inspection criteria, product images
-// and the live costing panels reconnect in Phase 5.
+// Molds, inspection criteria, product images and the live costing panels
+// reconnect in Phase 5. The material list (dana, pigment, parts, packing) is
+// the BOM tab — it writes product_bom_lines only (a DB trigger keeps the
+// legacy product_materials table in sync; product_sets is no longer used).
 
 const PRODUCT_CATEGORIES = [
   { value: 'INJ', label: 'Injection Molding' },
@@ -151,6 +158,11 @@ export default function ProductMaster() {
   const [isCopyMode, setIsCopyMode] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
   const [formData, setFormData] = useState({ ...emptyForm });
+  const { roles } = useAuth();
+  const canEditBom = roles.some((r) => r === 'admin' || r === 'production_manager' || r === 'super_user');
+  const { map: bomStatus } = useBomStatusMap();
+  useRealtimeInvalidate(['product_bom_lines'], [['bom-check'], ['product-bom']]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Quick Add dialogs
   const [quickAddMaterialDialog, setQuickAddMaterialDialog] = useState<{
@@ -194,19 +206,26 @@ export default function ProductMaster() {
     return result;
   }, [products, filterCategory, filterType, filterStatus, filterClientIds]);
 
-  // Filter masterbatch materials
-  const masterbatchMaterials = materials.filter((m: any) =>
-    m.material_type?.toLowerCase().includes('masterbatch') ||
-    m.material_type?.toLowerCase().includes('color') ||
-    m.material_type?.toLowerCase() === 'mb'
-  );
 
   const columns: Column<ProductWithRelations>[] = [
     {
       key: 'code',
       label: 'Code',
       sortable: true,
-      render: (item) => <span className="font-medium text-primary font-mono">{item.code}</span>,
+      render: (item) => {
+        const st = bomStatus[item.id];
+        const meta = st ? BOM_STATUS_META[st.bom_status] : null;
+        return (
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${meta ? meta.dot : 'bg-transparent'}`}
+              title={st ? `BOM: ${meta!.en}${st.issues.length ? ' — ' + st.issues.join('; ') : ''}` : undefined}
+              aria-label={st ? `BOM ${st.bom_status}` : undefined}
+            />
+            <span className="font-medium text-primary font-mono">{item.code}</span>
+          </span>
+        );
+      },
     },
     {
       key: 'name',
@@ -361,6 +380,28 @@ export default function ProductMaster() {
     setIsCopyMode(true);
     setIsDialogOpen(true);
   };
+
+  const openBom = (productId: string) => {
+    const p = (products as ProductWithRelations[]).find((x) => x.id === productId);
+    if (!p) return;
+    setFormData(loadForm(p));
+    setSelectedProduct(p);
+    setIsViewMode(false);
+    setIsCopyMode(false);
+    setActiveTab('bom');
+    setIsDialogOpen(true);
+  };
+
+  // Deep link from BOM Check: /masters/products?bom=<productId>
+  const bomParam = searchParams.get('bom');
+  useEffect(() => {
+    if (!bomParam || !products.length) return;
+    openBom(bomParam);
+    const next = new URLSearchParams(searchParams);
+    next.delete('bom');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bomParam, products.length]);
 
   const handleDelete = (product: ProductWithRelations) => {
     if (confirm(`Are you sure you want to delete ${product.name}?`)) {
@@ -773,7 +814,7 @@ export default function ProductMaster() {
         setIsDialogOpen(open);
         if (!open) resetForm();
       }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className={`${activeTab === 'bom' ? 'max-w-5xl' : 'max-w-3xl'} max-h-[90vh] overflow-y-auto`}>
           <DialogHeader>
             <DialogTitle>
               {isViewMode
@@ -788,14 +829,42 @@ export default function ProductMaster() {
 
           <form onSubmit={handleSave}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3 h-auto">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="pricing" className="flex items-center gap-1">
                   <IndianRupee size={14} />
-                  Pricing &amp; Costing
+                  <span className="hidden sm:inline">Pricing &amp; Costing</span>
+                  <span className="sm:hidden">Pricing</span>
                 </TabsTrigger>
-                {/* Materials mix / BOM Components / Inspection tabs reconnect in Phase 5 */}
+                <TabsTrigger value="bom" className="flex items-center gap-1">
+                  <ListTree size={14} />
+                  <span className="hidden sm:inline">BOM / Material List</span>
+                  <span className="sm:hidden">BOM</span>
+                </TabsTrigger>
+                {/* Inspection tab reconnects in Phase 5 */}
               </TabsList>
+
+              <TabsContent
+                value="bom"
+                className="pt-4"
+                // The BOM saves on its own; Enter must not submit the product form around it.
+                onKeyDown={(e) => { if (e.key === 'Enter' && (e.target as HTMLElement).tagName === 'INPUT') e.preventDefault(); }}
+              >
+                {selectedProduct && !isCopyMode ? (
+                  <BomEditor
+                    product={selectedProduct as unknown as BomProduct}
+                    products={products as unknown as BomProduct[]}
+                    materials={materials as any[]}
+                    canEdit={canEditBom && !isViewMode}
+                    onOpenProduct={openBom}
+                  />
+                ) : (
+                  <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+                    Save the product first, then add its BOM here.
+                    <div dir="rtl" lang="ur" className="mt-1">پہلے پروڈکٹ محفوظ کریں، پھر میٹریل لسٹ بنائیں۔</div>
+                  </div>
+                )}
+              </TabsContent>
 
               <TabsContent value="basic" className="space-y-4 pt-4">
                 {/* Product image upload reconnects in Phase 5 (storage bucket) */}
@@ -955,51 +1024,14 @@ export default function ProductMaster() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="masterbatch_id">Masterbatch</Label>
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <SearchableComboBox
-                          value={formData.masterbatch_id || ''}
-                          onChange={(value) => setFormData({ ...formData, masterbatch_id: value })}
-                          disabled={isViewMode}
-                          placeholder={masterbatchMaterials.length === 0 ? 'No masterbatch materials found' : 'Select masterbatch'}
-                          searchPlaceholder="Search by name or color…"
-                          emptyMessage="No matching masterbatch"
-                          options={masterbatchMaterials.map((material: any) => ({
-                            value: material.id,
-                            label: material.name,
-                            description: material.color || material.material_type,
-                          }))}
-                        />
-                      </div>
-                      {!isViewMode && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className="flex-shrink-0"
-                          title="Quick add new masterbatch"
-                          onClick={() => setQuickAddMaterialDialog({ open: true, type: 'Masterbatch', target: 'masterbatch' })}
-                        >
-                          <Plus size={16} />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="masterbatch_ratio">Masterbatch Ratio (%)</Label>
-                    <Input
-                      id="masterbatch_ratio"
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="100"
-                      value={formData.masterbatch_ratio || ''}
-                      onChange={(e) => setFormData({ ...formData, masterbatch_ratio: parseFloat(e.target.value) || 0 })}
-                      disabled={isViewMode}
-                      placeholder="e.g., 2.0"
-                    />
+                    <Label>Pigment, parts &amp; packing</Label>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('bom')}
+                      className="w-full rounded-md border border-dashed px-3 py-2 text-left text-sm text-muted-foreground hover:bg-muted/50"
+                    >
+                      Set grams per piece, pigment, fitting parts and thaili/carton in the <span className="font-medium text-foreground">BOM / Material List</span> tab →
+                    </button>
                   </div>
 
                   <div className="col-span-2 space-y-2">
@@ -1185,7 +1217,7 @@ export default function ProductMaster() {
               </TabsContent>
             </Tabs>
 
-            {!isViewMode && (
+            {!isViewMode && activeTab !== 'bom' && (
               <div className="flex justify-end gap-2 pt-4 mt-4 border-t border-border">
                 <Button type="button" variant="outline" onClick={() => {
                   setIsDialogOpen(false);
