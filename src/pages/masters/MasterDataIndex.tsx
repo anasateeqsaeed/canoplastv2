@@ -9,6 +9,7 @@ import {
   Factory,
   Package,
   Boxes,
+  ClipboardCheck,
 } from 'lucide-react';
 
 // Trimmed from v1's ~15-card index down to the masters that actually exist in
@@ -71,6 +72,13 @@ const masterModules = [
     icon: Boxes,
     path: '/masters/products',
     color: 'accent',
+  },
+  {
+    title: 'BOM Check',
+    description: 'Products whose material list (BOM) is missing or looks wrong',
+    icon: ClipboardCheck,
+    path: '/masters/bom-check',
+    color: 'destructive',
   },
 ];
 

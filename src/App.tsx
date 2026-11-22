@@ -51,6 +51,7 @@ import GateOut from '@/pages/inventory/GateOut';
 import FinishedGoodsStock from '@/pages/inventory/FinishedGoodsStock';
 import DeliveryConfirmationPage from '@/pages/inventory/DeliveryConfirmation';
 import ReadinessWeights from '@/pages/settings/ReadinessWeights';
+import BomCheck from '@/pages/masters/BomCheck';
 
 import '@/i18n';
 
@@ -104,6 +105,7 @@ const App = () => (
                 <Route path="/masters/suppliers" element={<ProtectedRoute><SupplierMaster /></ProtectedRoute>} />
                 <Route path="/masters/materials" element={<ProtectedRoute><MaterialMaster /></ProtectedRoute>} />
                 <Route path="/masters/products" element={<ProtectedRoute><ProductMaster /></ProtectedRoute>} />
+                <Route path="/masters/bom-check" element={<ProtectedRoute><BomCheck /></ProtectedRoute>} />
                 <Route path="/masters/*" element={<ProtectedRoute><ComingSoon title="Master Data" subtitle="Landing across Phases 0-5" /></ProtectedRoute>} />
 
                 {/* Purchase (Phase 2) */}

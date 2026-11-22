@@ -56,6 +56,7 @@ const navItems: NavItem[] = [
       { label: 'Suppliers', path: '/masters/suppliers' },
       { label: 'Materials', path: '/masters/materials' },
       { label: 'Products', path: '/masters/products' },
+      { label: 'BOM Check', path: '/masters/bom-check' },
     ],
   },
   {

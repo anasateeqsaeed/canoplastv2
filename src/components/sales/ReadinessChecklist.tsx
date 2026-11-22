@@ -13,6 +13,7 @@ import {
   type ReadinessStep,
   type StepStatus,
 } from '@/hooks/useOrderReadiness';
+import { useSoLineNeeds, type SoComponentNeed, type SoMaterialNeed } from '@/hooks/useBom';
 
 const STATUS_META: Record<StepStatus, { en: string; ur: string; dot: string; text: string; icon: React.ReactNode }> = {
   done: { en: 'Done', ur: 'مکمل', dot: 'bg-green-600 text-white border-green-600', text: 'text-green-700 dark:text-green-400', icon: <Check size={14} /> },
@@ -25,21 +26,65 @@ const STATUS_META: Record<StepStatus, { en: string; ur: string; dot: string; tex
 
 interface StepLink { to: string; label: string; external?: boolean }
 
-/** Where each order step (1–7) gets fixed. Modules not built yet still point at their future home. */
-function orderStepLinks(step: ReadinessStep): StepLink[] {
+/** Where each order step gets fixed. Modules not built yet still point at their future home. */
+function orderStepLinks(step: ReadinessStep, productId: string | null): StepLink[] {
+  const bom: StepLink[] = productId ? [{ to: `/masters/products?bom=${productId}`, label: 'BOM' }] : [];
   switch (step.step_key) {
     case 'mold': return [{ to: '/tooling', label: 'Tooling' }];
     case 'machine': return [{ to: '/production', label: 'Production plan' }];
-    case 'raw_material': return [{ to: '/purchase/orders', label: 'Purchase' }, { to: '/inventory/raw-materials', label: 'RM stock' }];
-    case 'pigment': return [{ to: '/purchase/orders', label: 'Purchase' }, { to: '/mixing', label: 'Mixing' }];
-    case 'packing': return [{ to: '/masters/products', label: 'Product materials' }];
+    case 'raw_material': return [{ to: '/purchase/orders', label: 'Purchase' }, { to: '/inventory/raw-materials', label: 'RM stock' }, ...bom];
+    case 'pigment': return [{ to: '/purchase/orders', label: 'Purchase' }, { to: '/mixing', label: 'Mixing' }, ...bom];
+    case 'components': return [{ to: '/inventory/fg-stock', label: 'Parts stock' }, { to: '/production', label: 'Production' }, ...bom];
+    case 'packing': return [{ to: '/purchase/orders', label: 'Purchase' }, ...bom];
     case 'production': return [{ to: '/production', label: 'Production' }];
     case 'dispatch': return [{ to: '/inventory/dispatch', label: 'Dispatch' }];
     default: return [];
   }
 }
 
-/** Where each closure step (8–12) gets fixed, per DC that carries this line. */
+const fmtNum = (n: number) => Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+/** Material / part rows behind a step (from v_so_raw_material / v_so_component_need). */
+function NeedsList({ materials, components }: { materials: SoMaterialNeed[]; components: SoComponentNeed[] }) {
+  const n = materials.length + components.length;
+  if (!n) return null;
+  const short = materials.filter((m) => Number(m.shortfall) > 0).length + components.filter((c) => Number(c.shortfall) > 0).length;
+  return (
+    <details className="mt-1.5 group">
+      <summary className="cursor-pointer select-none text-xs text-muted-foreground hover:text-foreground">
+        {components.length ? 'Parts' : 'Materials'} ({n}){short ? <span className="text-red-600"> · {short} short</span> : null}
+      </summary>
+      <ul className="mt-1 divide-y rounded border text-xs">
+        {components.map((c) => (
+          <li key={c.component_product_id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 px-2 py-1">
+            <span className="font-mono">{c.component_code}</span>
+            <span className="text-muted-foreground truncate max-w-[12rem]">{c.component_name}</span>
+            <span className="ml-auto tabular-nums whitespace-nowrap">
+              need {fmtNum(c.required)} · free {fmtNum(c.free_for_this)}
+              {Number(c.shortfall) > 0 && <span className="text-red-600"> · short {fmtNum(c.shortfall)}</span>}
+            </span>
+          </li>
+        ))}
+        {materials.map((m, i) => (
+          <li key={`${m.material_id}-${m.via_component_code ?? ''}-${i}`} className="flex flex-wrap items-center gap-x-2 gap-y-0.5 px-2 py-1">
+            <span>{m.material_name ?? '—'}</span>
+            {m.via_component_code && (
+              <span className="rounded bg-muted px-1 text-[10px] text-muted-foreground" title="Needed for this part of the set">
+                via {m.via_component_code}
+              </span>
+            )}
+            <span className="ml-auto tabular-nums whitespace-nowrap">
+              need {fmtNum(m.required)} {m.unit ?? ''} · free {fmtNum(m.free_for_this)}
+              {Number(m.shortfall) > 0 && <span className="text-red-600"> · short {fmtNum(m.shortfall)}</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
+/** Where each closure step (invoice → payment) gets fixed, per DC that carries this line. */
 function closureStepLinks(step: ReadinessStep, dcs: ClosureDC[], orderId: string): StepLink[] {
   const back = encodeURIComponent(`/sales/orders/${orderId}`);
   const confirm = (dc: ClosureDC) => ({ to: `/inventory/dispatch/${dc.dispatch_id}/confirm?back=${back}`, label: dc.dispatch_number });
@@ -69,15 +114,24 @@ function closureStepLinks(step: ReadinessStep, dcs: ClosureDC[], orderId: string
   }
 }
 
-function Stepper({ steps, linksFor }: { steps: ReadinessStep[]; linksFor: (s: ReadinessStep) => StepLink[] }) {
+function Stepper({
+  steps,
+  linksFor,
+  extra,
+}: {
+  steps: ReadinessStep[];
+  linksFor: (s: ReadinessStep) => StepLink[];
+  extra?: (s: ReadinessStep) => React.ReactNode;
+}) {
   return (
     <ol className="relative">
       {steps.map((s, i) => {
         const meta = STATUS_META[s.status] ?? STATUS_META.pending;
         const pct = s.score == null ? null : Math.round(Number(s.score) * 100);
-        const links = s.status === 'done' ? [] : linksFor(s);
+        const na = s.status === 'na';
+        const links = s.status === 'done' || na ? [] : linksFor(s);
         return (
-          <li key={`${s.step_key}-${i}`} className="relative flex gap-3 pb-4 last:pb-0">
+          <li key={`${s.step_key}-${i}`} className={cn('relative flex gap-3 pb-4 last:pb-0', na && 'opacity-50')}>
             {i < steps.length - 1 && <span className="absolute left-[13px] top-7 bottom-0 w-px bg-border" aria-hidden />}
             <span className={cn('relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold', meta.dot)}>
               {s.status === 'pending' ? s.step_no : meta.icon}
@@ -93,12 +147,16 @@ function Stepper({ steps, linksFor }: { steps: ReadinessStep[]; linksFor: (s: Re
                   {pct != null && `${pct}% · `}wt {Number(s.weight)}
                 </span>
               </div>
-              {pct != null && (
+              {pct != null && !na && (
                 <div className="h-1 bg-muted rounded mt-1">
                   <div className={cn('h-1 rounded', s.status === 'blocked' ? 'bg-red-600' : s.status === 'done' ? 'bg-green-600' : 'bg-amber-500')} style={{ width: `${Math.min(100, pct)}%` }} />
                 </div>
               )}
-              {s.detail && <p className="mt-1 text-xs text-muted-foreground whitespace-pre-line break-words">{s.detail.split(' | ').join('\n')}</p>}
+              {na ? (
+                <p className="mt-0.5 text-xs text-muted-foreground">Not needed for this item <span dir="rtl" lang="ur">اس آئٹم کے لیے نہیں</span></p>
+              ) : (
+                s.detail && <p className="mt-1 text-xs text-muted-foreground whitespace-pre-line break-words">{s.detail.split(' | ').join('\n')}</p>
+              )}
               {s.eta && <p className="text-xs text-muted-foreground">ETA {fmtDate(s.eta)}</p>}
               {links.length > 0 && (
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -113,6 +171,7 @@ function Stepper({ steps, linksFor }: { steps: ReadinessStep[]; linksFor: (s: Re
                   ))}
                 </div>
               )}
+              {!na && extra?.(s)}
             </div>
           </li>
         );
@@ -142,12 +201,13 @@ export function ReadinessChecklist({
   summary,
 }: {
   orderId: string;
-  items: Array<{ id: string; products?: { code?: string; name?: string } | null }>;
+  items: Array<{ id: string; product_id?: string | null; products?: { code?: string; name?: string } | null }>;
   summary: OrderReadinessSummary | undefined;
 }) {
   const { data: orderSteps = [], isLoading: l1 } = useReadinessSteps(orderId);
   const { data: closureSteps = [], isLoading: l2 } = useClosureSteps(orderId);
   const { data: dcs = [] } = useOrderClosureLinks(orderId, items.map((i) => i.id));
+  const { data: needs } = useSoLineNeeds(orderId);
 
   if (l1 || l2) {
     return <Card><CardContent className="p-6 text-center text-muted-foreground">Loading readiness…</CardContent></Card>;
@@ -190,7 +250,22 @@ export function ReadinessChecklist({
                 <h4 className="mb-3 text-sm font-semibold">
                   Order steps <span dir="rtl" lang="ur" className="font-normal text-muted-foreground">آرڈر کے مراحل</span>
                 </h4>
-                {os.length ? <Stepper steps={os} linksFor={orderStepLinks} /> : <p className="text-sm text-muted-foreground">—</p>}
+                {os.length ? (
+                  <Stepper
+                    steps={os}
+                    linksFor={(s) => orderStepLinks(s, item?.product_id ?? null)}
+                    extra={(s) =>
+                      ['raw_material', 'pigment', 'packing', 'components'].includes(s.step_key) ? (
+                        <NeedsList
+                          materials={(needs?.materials ?? []).filter((m) => m.sales_order_item_id === lineId && m.step_key === s.step_key)}
+                          components={s.step_key === 'components' ? (needs?.components ?? []).filter((c) => c.sales_order_item_id === lineId) : []}
+                        />
+                      ) : null
+                    }
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground">—</p>
+                )}
               </section>
               <section className="lg:border-l lg:pl-6">
                 <h4 className="mb-3 text-sm font-semibold">
