@@ -57,3 +57,9 @@ Full spec was drafted; short version:
 - **BOM Check** at `/masters/bom-check` (`v_product_bom_check`, active products) — deep-links to `/masters/products?bom=<id>`
 - BOM status dot on the product list; readiness step 5 "Fitting parts", N/A steps greyed, per-step material/part needs with "via <part>"
 - Pure helpers + tests in `src/lib/bom.ts` (`computeNeed` mirrors `v_product_bom.need_per_piece`)
+
+## Order line Status Boxes (frontend)
+- `get_so_line_boxes(_soi)` → Status Boxes drawer on the Sales Order page (click a line, or "Status boxes" on a readiness card): Mold · Machine · Raw Material · Pigment · Fitting parts (hidden if n/a) · Thaili/Carton · Production · Dispatch, with plan sentence and expandable details
+- "Create PO" on shortfall rows → `/purchase/orders?new=1&material=<id>&qty=<n>&note=<text>` (PO dialog opens prefilled)
+- Production → Machine Availability (`/production/machines`, `v_machine_availability`) and Mold Availability (`/production/molds`, `v_mold_availability`)
+- `hours_per_day` (so_readiness_weights, phase `setting`) editable on Settings → Readiness Weights

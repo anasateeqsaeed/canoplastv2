@@ -685,6 +685,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "assembly_inspection_lots_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "assembly_inspection_lots_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -769,6 +776,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "production_jobs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assembly_job_components_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
           },
         ]
       }
@@ -918,11 +932,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "assembly_production_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "assembly_production_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assembly_production_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "assembly_production_production_lot_id_fkey"
@@ -1593,11 +1621,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "compound_dispatches_target_job_id_fkey"
+            columns: ["target_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "compound_dispatches_target_machine_id_fkey"
             columns: ["target_machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compound_dispatches_target_machine_id_fkey"
+            columns: ["target_machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
         ]
       }
@@ -3332,6 +3374,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "electricity_load_points_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: true
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "electricity_load_points_meter_id_fkey"
             columns: ["meter_id"]
             isOneToOne: false
@@ -4194,6 +4243,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "external_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
+          },
+          {
             foreignKeyName: "external_jobs_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -4357,6 +4413,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "external_mold_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "external_mold_jobs_vendor_id_fkey"
@@ -4843,6 +4906,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "gate_movements_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
+          },
+          {
             foreignKeyName: "gate_movements_return_of_id_fkey"
             columns: ["return_of_id"]
             isOneToOne: false
@@ -5072,6 +5142,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gate_pass_items_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "gate_pass_items_product_id_fkey"
@@ -5839,11 +5916,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "hourly_inspections_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "hourly_inspections_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hourly_inspections_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "hourly_inspections_product_id_fkey"
@@ -6007,6 +6098,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "hourly_production_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "hourly_production_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
@@ -6014,11 +6112,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "hourly_production_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "hourly_production_mold_id_fkey"
             columns: ["mold_id"]
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hourly_production_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "hourly_production_production_lot_id_fkey"
@@ -6337,11 +6449,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "inspection_alerts_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "inspection_alerts_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_alerts_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "inspection_alerts_product_id_fkey"
@@ -6483,6 +6609,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_rejections_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "inspection_rejections_product_id_fkey"
@@ -6648,6 +6781,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "inspections_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "inspections_rejection_reason_id_fkey"
             columns: ["rejection_reason_id"]
             isOneToOne: false
@@ -6748,11 +6888,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "investor_assets_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "investor_assets_mold_id_fkey"
             columns: ["mold_id"]
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_assets_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
         ]
       }
@@ -7025,6 +7179,13 @@ export type Database = {
             referencedRelation: "machines"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "iot_alerts_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
         ]
       }
       iot_assignments: {
@@ -7133,6 +7294,13 @@ export type Database = {
             referencedRelation: "machines"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "iot_devices_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
         ]
       }
       iot_equipment: {
@@ -7179,6 +7347,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iot_equipment_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
         ]
       }
@@ -7294,6 +7469,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "job_activation_log_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "job_activation_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
@@ -7301,11 +7483,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "job_activation_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "job_activation_log_previous_job_id_fkey"
             columns: ["previous_job_id"]
             isOneToOne: false
             referencedRelation: "production_jobs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_activation_log_previous_job_id_fkey"
+            columns: ["previous_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
           },
         ]
       }
@@ -7361,6 +7557,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "job_changeover_alerts_current_job_id_fkey"
+            columns: ["current_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "job_changeover_alerts_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
@@ -7368,11 +7571,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "job_changeover_alerts_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "job_changeover_alerts_next_job_id_fkey"
             columns: ["next_job_id"]
             isOneToOne: false
             referencedRelation: "production_jobs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_changeover_alerts_next_job_id_fkey"
+            columns: ["next_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
           },
         ]
       }
@@ -7629,6 +7846,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "leftover_compounds_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "leftover_compounds_source_batch_id_fkey"
             columns: ["source_batch_id"]
             isOneToOne: false
@@ -7641,6 +7865,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "production_jobs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leftover_compounds_source_job_id_fkey"
+            columns: ["source_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
           },
           {
             foreignKeyName: "leftover_compounds_storage_location_id_fkey"
@@ -7735,6 +7966,13 @@ export type Database = {
             referencedRelation: "machines"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "machine_id_changes_machine_uuid_fkey"
+            columns: ["machine_uuid"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
         ]
       }
       machines: {
@@ -7826,6 +8064,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_machines_current_mold"
+            columns: ["current_mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "machines_department_id_fkey"
@@ -7948,11 +8193,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "maintenance_schedule_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "maintenance_schedule_mold_id_fkey"
             columns: ["mold_id"]
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_schedule_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
         ]
       }
@@ -8225,11 +8484,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "maintenance_work_orders_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "maintenance_work_orders_mold_id_fkey"
             columns: ["mold_id"]
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_work_orders_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
         ]
       }
@@ -8703,6 +8976,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "material_issues_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "material_issues_material_lot_id_fkey"
             columns: ["material_lot_id"]
             isOneToOne: false
@@ -8933,6 +9213,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_returns_from_machine_id_fkey"
+            columns: ["from_machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "material_returns_to_location_id_fkey"
@@ -9277,6 +9564,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "mixing_batches_mixing_machine_id_fkey"
+            columns: ["mixing_machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "mixing_batches_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -9540,6 +9834,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "production_jobs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mixing_work_orders_production_job_id_fkey"
+            columns: ["production_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
           },
         ]
       }
@@ -10417,6 +10718,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "petty_cash_transactions_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "petty_cash_transactions_maintenance_wo_id_fkey"
             columns: ["maintenance_wo_id"]
             isOneToOne: false
@@ -10429,6 +10737,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "petty_cash_transactions_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "petty_cash_transactions_register_id_fkey"
@@ -10724,6 +11039,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "printing_jobs_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "printing_jobs_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -10833,6 +11155,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "printing_production_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "printing_production_printing_job_id_fkey"
@@ -11118,6 +11447,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_molds_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "product_molds_product_id_fkey"
@@ -11557,11 +11893,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "production_jobs_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
             foreignKeyName: "production_jobs_mold_id_fkey"
             columns: ["mold_id"]
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "production_jobs_product_id_fkey"
@@ -11701,11 +12051,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "production_lots_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "production_lots_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_lots_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
           {
             foreignKeyName: "production_lots_product_id_fkey"
@@ -11786,11 +12150,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "production_material_receipts_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "production_material_receipts_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_material_receipts_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
         ]
       }
@@ -11974,6 +12352,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
         ]
       }
@@ -12862,6 +13247,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "sales_order_allocations_production_job_id_fkey"
+            columns: ["production_job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "sales_order_allocations_sales_order_item_id_fkey"
             columns: ["sales_order_item_id"]
             isOneToOne: false
@@ -13433,11 +13825,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "shift_production_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "shift_production_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shift_production_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
         ]
       }
@@ -14005,11 +14411,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "store_requisitions_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "v_job_eta"
+            referencedColumns: ["job_id"]
+          },
+          {
             foreignKeyName: "store_requisitions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_requisitions_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
           },
         ]
       }
@@ -15405,6 +15825,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vendor_material_issues_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
+          },
+          {
             foreignKeyName: "vendor_material_issues_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -15503,6 +15930,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "molds"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_material_return_items_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
           {
             foreignKeyName: "vendor_material_return_items_product_id_fkey"
@@ -15891,6 +16325,13 @@ export type Database = {
             referencedRelation: "machines"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "iot_devices_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
         ]
       }
       iot_hourly_energy: {
@@ -16131,6 +16572,173 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "vendor_material_issues"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_job_eta: {
+        Row: {
+          actual_qty: number | null
+          cavities: number | null
+          created_at: string | null
+          cycle_time: number | null
+          eta_date: string | null
+          hours_left: number | null
+          job_id: string | null
+          job_number: string | null
+          job_status: string | null
+          machine_id: string | null
+          mold_id: string | null
+          planned_qty: number | null
+          product_code: string | null
+          product_id: string | null
+          rate_per_hour: number | null
+          rate_source: string | null
+          remaining_qty: number | null
+          scheduled_date: string | null
+          start_date: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_jobs_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_jobs_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "production_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "molds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
+          },
+          {
+            foreignKeyName: "production_jobs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_jobs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_product_bom_check"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "production_jobs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_product_free_stock"
+            referencedColumns: ["product_id"]
+          },
+        ]
+      }
+      v_machine_availability: {
+        Row: {
+          current_job: string | null
+          current_job_eta: string | null
+          current_product: string | null
+          current_rate: number | null
+          current_remaining: number | null
+          department_id: string | null
+          free_from: string | null
+          free_now: boolean | null
+          machine_code: string | null
+          machine_id: string | null
+          machine_status: string | null
+          machine_type: string | null
+          maintenance_status: string | null
+          maintenance_till: string | null
+          maintenance_wo: string | null
+          queued_jobs: number | null
+          queued_list: string | null
+          stop_reason: string | null
+          tonnage: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "machines_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_mold_availability: {
+        Row: {
+          cavities: number | null
+          current_shots: number | null
+          free_from: string | null
+          location: string | null
+          maintenance_status: string | null
+          maintenance_till: string | null
+          maintenance_wo: string | null
+          mold_id: string | null
+          mold_number: string | null
+          mold_status: string | null
+          ownership: string | null
+          problem_description: string | null
+          running_job: string | null
+          running_job_eta: string | null
+          running_on_machine: string | null
+          running_product: string | null
+          running_remaining: number | null
+          shot_life: number | null
+        }
+        Relationships: []
+      }
+      v_mold_machines: {
+        Row: {
+          last_used: string | null
+          machine_id: string | null
+          mold_id: string | null
+          times_used: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_jobs_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_jobs_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "v_machine_availability"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "production_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "molds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_jobs_mold_id_fkey"
+            columns: ["mold_id"]
+            isOneToOne: false
+            referencedRelation: "v_mold_availability"
+            referencedColumns: ["mold_id"]
           },
         ]
       }
@@ -17023,6 +17631,7 @@ export type Database = {
           selling_price: number
         }[]
       }
+      get_so_line_boxes: { Args: { _soi: string }; Returns: Json }
       get_user_activity_with_email: {
         Args: { limit_count?: number }
         Returns: {
@@ -17520,6 +18129,10 @@ export type Database = {
       so_store_stock_decide: {
         Args: { p_accept: boolean; p_qty?: number; p_soi_id: string }
         Returns: Json
+      }
+      sync_bom_from_legacy: {
+        Args: { _product_id: string }
+        Returns: undefined
       }
       sync_legacy_product_materials: {
         Args: { _product_id: string }
